@@ -1,0 +1,43 @@
+# .gitignore for cib-mango-tree-peter
+# Ignore local data files (sensitive or large) -- keep them out of the repo
+/data/
+# If you want to keep an empty `data/` directory in the repo, create an empty
+# file `data/.gitkeep` and then uncomment the next line:
+# !/data/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment files
+.env
+.env.*
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Editor directories
+.vscode/
+.idea/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+
