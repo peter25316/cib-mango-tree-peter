@@ -7,56 +7,124 @@ import polars as pl
 import pandas as pd
 import numpy as np
 from statsmodels.tsa.stattools import acf as sm_acf
+import os
 
 
-def plot_hourly_posts(posts_per_hour: pl.DataFrame):
+def get_html_path(plot_name: str, plots_dir: str) -> str:
+    """Get the full path for an HTML plot file"""
+    return os.path.join(plots_dir, f"{plot_name}.html")
+
+
+def plot_hourly_posts(posts_per_hour: pl.DataFrame, save_path: str = None):
     """Plots the raw posts-per-hour time series."""
     print("Creating plot: Posts Per Hour...")
     fig = px.line(posts_per_hour.to_pandas(),
                   x='post_timestamp',
                   y='post_count',
                   title='Posts Per Hour on Truth Social Sample')
-    fig.show()
+
+    if save_path:
+        # Save static version
+        fig.write_image(save_path)
+        # Save interactive HTML version
+        html_path = get_html_path('hourly_posts', os.path.dirname(save_path))
+        fig.write_html(html_path)
+    else:
+        fig.show()
 
 
-def plot_acf(posts_per_hour: pl.DataFrame):
+def plot_acf(posts_per_hour: pl.DataFrame, save_path: str = None):
     """Calculates and plots the Autocorrelation Function (ACF)."""
     print("Creating plot: Autocorrelation Function (ACF)...")
-    fig, ax = plt.subplots(figsize=(12, 5))
-    # Ensure we pass a pandas Series / 1-d array to statsmodels
+
+    # Create plotly figure for ACF (instead of matplotlib)
     series = posts_per_hour.to_pandas()['post_count']
-    # Clean series
     series_clean = series.dropna().astype(float)
     max_lags = 7 * 24
-    # Compute ACF values using statsmodels.tsa.stattools.acf (robust across versions)
     acf_vals = sm_acf(series_clean, nlags=max_lags, fft=True)
     lags = np.arange(len(acf_vals))
-    ax.stem(lags, acf_vals)
-    ax.set_title('Autocorrelation Function (ACF) of Posts Per Hour')
-    ax.set_xlabel('Lag (Hours)')
-    ax.set_ylabel('Autocorrelation')
-    ax.grid(True)
-    plt.show()
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=lags,
+        y=acf_vals,
+        mode='markers+lines',
+        name='ACF'
+    ))
+
+    fig.update_layout(
+        title='Autocorrelation Function (ACF) of Posts Per Hour',
+        xaxis_title='Lag (Hours)',
+        yaxis_title='Autocorrelation',
+        showlegend=False
+    )
+
+    if save_path:
+        # Save static version
+        fig.write_image(save_path)
+        # Save interactive HTML version
+        html_path = get_html_path('acf_plot', os.path.dirname(save_path))
+        fig.write_html(html_path)
+    else:
+        fig.show()
 
 
-def plot_transformation_comparison(posts_per_hour: pl.DataFrame, posts_per_hour_transformed: pl.DataFrame):
+def plot_transformation_comparison(posts_per_hour: pl.DataFrame, posts_per_hour_transformed: pl.DataFrame, save_path: str = None):
     """Shows the original and log-transformed plots side-by-side."""
     print("Creating plot: Variance Comparison...")
-    fig_original = px.line(posts_per_hour.to_pandas(),
-                           x='post_timestamp',
-                           y='post_count',
-                           title='Original Posts Per Hour (Raw Count)')
 
-    fig_log = px.line(posts_per_hour_transformed.to_pandas(),
-                      x='post_timestamp',
-                      y='log_post_count',
-                      title='Log-Transformed Posts Per Hour (log(1 + Count))')
+    fig = go.Figure()
 
-    fig_original.show()
-    fig_log.show()
+    # Add original data subplot
+    fig.add_trace(
+        go.Scatter(
+            x=posts_per_hour.to_pandas()['post_timestamp'],
+            y=posts_per_hour.to_pandas()['post_count'],
+            name='Original',
+            line=dict(color='blue')
+        )
+    )
+
+    # Add transformed data subplot
+    fig.add_trace(
+        go.Scatter(
+            x=posts_per_hour_transformed.to_pandas()['post_timestamp'],
+            y=posts_per_hour_transformed.to_pandas()['log_post_count'],
+            name='Log-Transformed',
+            yaxis='y2',
+            line=dict(color='red')
+        )
+    )
+
+    # Update layout to show plots side by side
+    fig.update_layout(
+        title='Original vs Log-Transformed Posts Per Hour',
+        yaxis=dict(
+            title='Post Count',
+            title_font=dict(color='blue'),
+            tickfont=dict(color='blue')
+        ),
+        yaxis2=dict(
+            title='Log(Post Count)',
+            title_font=dict(color='red'),
+            tickfont=dict(color='red'),
+            anchor='x',
+            overlaying='y',
+            side='right'
+        )
+    )
+
+    if save_path:
+        # Save static version
+        fig.write_image(save_path)
+        # Save interactive HTML version
+        html_path = get_html_path('transformation_comparison', os.path.dirname(save_path))
+        fig.write_html(html_path)
+    else:
+        fig.show()
 
 
-def plot_burst_rectangles(posts_per_hour_transformed: pl.DataFrame, burst_list: list):
+def plot_burst_rectangles(posts_per_hour_transformed: pl.DataFrame, burst_list: list, save_path: str = None):
     """Plots the time series with burst periods highlighted as rectangles."""
     print("Creating plot: Burst Detection with Rectangles...")
     plot_df = posts_per_hour_transformed.to_pandas()
@@ -107,10 +175,18 @@ def plot_burst_rectangles(posts_per_hour_transformed: pl.DataFrame, burst_list: 
         yaxis_title='Log(Posts per Hour)',
         hovermode="x unified"
     )
-    fig.show()
+
+    if save_path:
+        # Save static version
+        fig.write_image(save_path)
+        # Save interactive HTML version
+        html_path = get_html_path('burst_rectangles', os.path.dirname(save_path))
+        fig.write_html(html_path)
+    else:
+        fig.show()
 
 
-def plot_burst_gantt(burst_list: list):
+def plot_burst_gantt(burst_list: list, save_path: str = None):
     """Creates a Gantt chart of all detected burst periods."""
     print("Creating plot: Burst Gantt Chart...")
     gantt_df = pd.DataFrame(burst_list)
@@ -126,4 +202,12 @@ def plot_burst_gantt(burst_list: list):
         labels={"burst_level_str": "Burst Level"}
     )
     fig.update_yaxes(categoryorder='array', categoryarray=sorted(gantt_df['burst_level_str'].unique(), reverse=True))
-    fig.show()
+
+    if save_path:
+        # Save static version
+        fig.write_image(save_path)
+        # Save interactive HTML version
+        html_path = get_html_path('burst_gantt', os.path.dirname(save_path))
+        fig.write_html(html_path)
+    else:
+        fig.show()
