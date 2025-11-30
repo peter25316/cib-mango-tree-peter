@@ -1,4 +1,4 @@
-# File: src/component/kleinberg_utils.py
+    # File: src/component/kleinberg_utils.py
 
 import numpy as np
 import math

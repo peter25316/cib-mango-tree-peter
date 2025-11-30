@@ -131,13 +131,27 @@ def plot_burst_rectangles(posts_per_hour_transformed: pl.DataFrame, burst_list: 
 
     fig = go.Figure()
 
-    # 1. Add the baseline time series
+    # 1. Add the baseline time series - check for available y-column
+    y_column = None
+    if 'log_post_count' in plot_df.columns:
+        y_column = 'log_post_count'
+        y_label = 'Log(Posts per Hour)'
+    elif 'post_count' in plot_df.columns:
+        y_column = 'post_count'
+        y_label = 'Posts per Hour'
+    else:
+        # Find any numeric column that's not timestamp
+        numeric_cols = plot_df.select_dtypes(include=[np.number]).columns
+        timestamp_cols = [col for col in plot_df.columns if 'timestamp' in col.lower() or 'time' in col.lower()]
+        y_column = [col for col in numeric_cols if col not in timestamp_cols][0]
+        y_label = y_column.replace('_', ' ').title()
+
     fig.add_trace(
         go.Scatter(
             x=plot_df['post_timestamp'],
-            y=plot_df['log_post_count'],
+            y=plot_df[y_column],
             mode='lines+markers',
-            name='Log(Posts per Hour)',
+            name=y_label,
             line=dict(color='blue'),
             marker=dict(size=4)
         )
@@ -211,3 +225,4 @@ def plot_burst_gantt(burst_list: list, save_path: str = None):
         fig.write_html(html_path)
     else:
         fig.show()
+

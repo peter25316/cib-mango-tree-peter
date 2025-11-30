@@ -11,7 +11,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from components.data_analyzer import DataAnalyzer
-from components.burst_detector import BurstDetector
+from components.burst_detector_enhanced import BurstDetectorEnhanced
 from components.temporal_clusterer import TemporalClusterer
 from components.visualizer import plot_hourly_posts
 
@@ -31,8 +31,8 @@ def test_data_analyzer():
 
 def test_burst_detector(analyzer):
     """Test burst detection functionality"""
-    print("Testing BurstDetector...")
-    detector = BurstDetector(s=2.0, gamma=1.0)
+    print("Testing BurstDetectorEnhanced...")
+    detector = BurstDetectorEnhanced(s=2.0, gamma=1.0)
     burst_list, posts_with_bursts, contributors = detector.detect_bursts(
         ts_df=analyzer.ts_df,
         posts_per_hour_transformed=analyzer.posts_per_hour_transformed,
@@ -41,7 +41,7 @@ def test_burst_detector(analyzer):
 
     assert isinstance(burst_list, list), "Burst list should be a list"
     assert len(burst_list) > 0, "No bursts detected"
-    print(f"✅ BurstDetector tests passed - {len(burst_list)} bursts detected")
+    print(f"✅ BurstDetectorEnhanced tests passed - {len(burst_list)} bursts detected")
     return burst_list, posts_with_bursts, contributors
 
 
