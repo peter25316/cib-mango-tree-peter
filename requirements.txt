@@ -1,21 +1,97 @@
-# Core data processing
-polars>=0.19.0
-pandas>=2.0.0
-numpy>=1.24.0
+# ============================================================================
+# CIB MANGO TREE - Social Media Coordination Analysis
+# Requirements for complete project functionality
+# ============================================================================
+# Python Version: 3.12+ (tested with Python 3.12)
+# Installation: pip install -r requirements.txt
+# ============================================================================
 
-# Statistical analysis
-statsmodels>=0.14.0
-scipy>=1.11.0
+# ============================================================================
+# CORE DATA PROCESSING
+# ============================================================================
+polars>=1.0.0              # Fast DataFrame library (tested with 1.34.0)
+pandas>=2.0.0              # Data manipulation (tested with 2.3.3)
+numpy>=1.24.0              # Numerical computing (tested with 2.3.4)
 
-# Visualization
-plotly>=5.17.0
-matplotlib>=3.7.0
+# ============================================================================
+# MACHINE LEARNING & CLUSTERING
+# ============================================================================
+scikit-learn>=1.3.0        # Machine learning - KMeans, StandardScaler (tested with 1.7.2)
 
-# Web app
-streamlit>=1.28.0
+# ============================================================================
+# STATISTICAL ANALYSIS
+# ============================================================================
+statsmodels>=0.14.0        # Time series analysis - ACF, ADF test (tested with 0.14.5)
+scipy>=1.11.0              # Scientific computing
 
-# Date parsing
-python-dateutil>=2.8.0
+# ============================================================================
+# NETWORK ANALYSIS
+# ============================================================================
+networkx>=3.1              # Network/graph analysis and community detection (tested with 3.6)
 
-# Burst detection algorithm (built-in components)
-# Uses custom Kleinberg implementation in src/components/
+# ============================================================================
+# VISUALIZATION
+# ============================================================================
+plotly>=5.17.0             # Interactive plotting - express, graph_objects, subplots (tested with 6.3.1)
+matplotlib>=3.7.0          # Static plotting and network visualizations
+seaborn>=0.12.0            # Statistical data visualization (tested with 0.13.2)
+
+# ============================================================================
+# WEB APPLICATION (STREAMLIT DEMO)
+# ============================================================================
+streamlit>=1.28.0          # Interactive web app framework (tested with 1.51.0)
+
+# ============================================================================
+# TEXT PROCESSING & UTILITIES
+# ============================================================================
+python-dateutil>=2.8.0     # Date parsing and timezone handling
+
+# ============================================================================
+# OPTIONAL DEVELOPMENT DEPENDENCIES
+# ============================================================================
+# Uncomment for development:
+# pytest>=7.4.0            # Testing framework
+# black>=23.0.0            # Code formatting
+# flake8>=6.0.0            # Linting
+# ipython>=8.12.0          # Enhanced Python shell
+
+# ============================================================================
+# NOTES
+# ============================================================================
+# - Burst Detection: Uses custom Kleinberg algorithm implementation
+#   (src/components/kleinberg_utils.py) - no external dependency required
+#
+# - The project structure:
+#   - src/components/: Core analysis components
+#   - demo/: Streamlit interactive application
+#   - analysis/: Analysis scripts
+#   - launcher.py: CLI entry point
+#
+# - Key Features Enabled:
+#   ✓ Kleinberg burst detection
+#   ✓ Temporal clustering (2D and 24D features)
+#   ✓ Network coordination analysis (NetworkX)
+#   ✓ Content similarity detection
+#   ✓ Community detection (modularity, label propagation)
+#   ✓ Interactive Streamlit dashboard
+#   ✓ Comprehensive visualizations (Plotly, Matplotlib, Seaborn)
+#   ✓ Retweet amplification analysis
+#   ✓ Hub account detection (degree centrality)
+#
+# - Python 3.12+ Required for:
+#   ✓ Modern type hints support (typing.Dict, List, Optional, etc.)
+#   ✓ Performance optimizations
+#   ✓ Latest library compatibility
+#   ✓ Match/case statements (if used in future)
+#
+# - Installation:
+#   1. Ensure Python 3.12+ is installed
+#   2. Create virtual environment: python -m venv .venv
+#   3. Activate: .venv\Scripts\activate (Windows) or source .venv/bin/activate (Unix)
+#   4. Install: pip install -r requirements.txt
+#
+# - Troubleshooting:
+#   - If polars fails: Ensure Python 3.12+ and upgrade pip first
+#   - If networkx fails: Check Python version compatibility
+#   - If streamlit has issues: Clear cache with streamlit cache clear
+# ============================================================================
