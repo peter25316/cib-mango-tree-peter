@@ -32,10 +32,12 @@ class ContentCoordinationDetector:
     def __init__(self,
                  identical_threshold: float = 0.95,
                  high_similarity_threshold: float = 0.85,
-                 min_content_length: int = 20):
+                 min_content_length: int = 20,
+                 plots_dir: str = "plots"):
         self.identical_threshold = identical_threshold
         self.high_similarity_threshold = high_similarity_threshold
         self.min_content_length = min_content_length
+        self.plots_dir = plots_dir  # Store plots directory
         self.coordination_pairs = []
         self.coordination_networks = []
 
@@ -122,7 +124,7 @@ class ContentCoordinationDetector:
         # Generate visualizations
         print("\n🎨 GENERATING NETWORK VISUALIZATIONS...")
         print("-" * 40)
-        self.generate_visualizations(results)
+        self.generate_visualizations(results, plots_dir=self.plots_dir)
 
         return results
 
@@ -1705,9 +1707,9 @@ class ContentCoordinationDetector:
             plt.savefig(file_path, format='PNG', dpi=300, bbox_inches='tight')
             print(f"📸 Network visualization saved to: {file_path}")
 
-        plt.show()
+        plt.close()  # Close figure to prevent display
 
-    def generate_visualizations(self, results: Dict):
+    def generate_visualizations(self, results: Dict, plots_dir: str = "plots"):
         """Generate comprehensive visualizations for coordination analysis results."""
 
         networks = results.get('coordination_networks', [])
@@ -1718,8 +1720,8 @@ class ContentCoordinationDetector:
 
         try:
             # Create plots directory
-            plots_dir = "plots"
             os.makedirs(plots_dir, exist_ok=True)
+            self.plots_dir = plots_dir  # Store for use in other methods
 
             print(f"📊 Generating visualizations for {len(networks)} networks...")
 
@@ -1794,20 +1796,10 @@ class ContentCoordinationDetector:
         fig.update_traces(marker=dict(size=10, line=dict(width=2, color='DarkSlateGrey')),
                         selector=dict(mode='markers'))
 
-        fig.show()
-
-        # Save to file
-        file_path = "plots/network_metrics_scatter.html"
-        fig.write_html(file_path)
-        print(f"📈 Network metrics plot saved to: {file_path}")
-
-        # Also try to save PNG
-        try:
-            png_path = "plots/network_metrics_scatter.png"
-            fig.write_image(png_path, scale=2)
-            print(f"📈 Network metrics PNG saved to: {png_path}")
-        except Exception as e:
-            print(f"⚠️ Could not save PNG: {e}")
+        # Save PNG only
+        png_path = os.path.join(self.plots_dir, "network_metrics_scatter.png")
+        fig.write_image(png_path, scale=2)
+        print(f"📈 Network metrics plot saved to: {png_path}")
 
     def plot_top_networks(self, results: Dict, top_n: int = 5):
         """Plot the top N networks by size and average confidence."""
@@ -1847,20 +1839,10 @@ class ContentCoordinationDetector:
         fig.update_traces(texttemplate='%{text}', textposition='outside')
         fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
 
-        fig.show()
-
-        # Save to file
-        file_path = f"plots/top_{top_n}_networks_bar_chart.html"
-        fig.write_html(file_path)
-        print(f"📊 Top networks bar chart saved to: {file_path}")
-
-        # Also try to save PNG
-        try:
-            png_path = f"plots/top_{top_n}_networks_bar_chart.png"
-            fig.write_image(png_path, scale=2)
-            print(f"📊 Top networks PNG saved to: {png_path}")
-        except Exception as e:
-            print(f"⚠️ Could not save PNG: {e}")
+        # Save PNG only
+        png_path = os.path.join(self.plots_dir, f"top_{top_n}_networks_bar_chart.png")
+        fig.write_image(png_path, scale=2)
+        print(f"📊 Top networks bar chart saved to: {png_path}")
 
     def create_coordination_dashboard(self, results: Dict):
         """Create a comprehensive dashboard of coordination analysis results."""
@@ -1936,15 +1918,7 @@ class ContentCoordinationDetector:
         fig.update_xaxes(title_text="Network Size", row=1, col=2)
         fig.update_yaxes(title_text="Count", row=1, col=2)
 
-        # Save dashboard
-        dashboard_path = "plots/coordination_dashboard.html"
-        fig.write_html(dashboard_path)
-        print(f"📊 Coordination dashboard saved to: {dashboard_path}")
-
-        # Also save as PNG
-        try:
-            png_path = "plots/coordination_dashboard.png"
-            fig.write_image(png_path, width=1200, height=800, scale=2)
-            print(f"📊 Dashboard PNG saved to: {png_path}")
-        except Exception as e:
-            print(f"⚠️ Could not save PNG dashboard: {e}")
+        # Save PNG only
+        png_path = os.path.join(self.plots_dir, "coordination_dashboard.png")
+        fig.write_image(png_path, width=1200, height=800, scale=2)
+        print(f"📊 Dashboard PNG saved to: {png_path}")

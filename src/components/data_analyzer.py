@@ -45,10 +45,13 @@ class DataAnalyzer:
             # Only attempt conversion for string columns
             if ts_df['post_timestamp'].dtype == pl.Utf8:
                 print("Converting string (ISO 8601 format) to datetime...")
-                # First, try Polars' parser without unsupported kwargs
+                # First, try Polars' parser with timezone-aware format
                 try:
                     ts_df = ts_df.with_columns(
-                        pl.col('post_timestamp').str.to_datetime().alias('post_timestamp')
+                        pl.col('post_timestamp').str.to_datetime(
+                            format="%Y-%m-%dT%H:%M:%S%.f%z",
+                            time_unit="us"
+                        ).dt.replace_time_zone(None).alias('post_timestamp')
                     )
                 except Exception as e:
                     # Fall back to an eager, Python-based parsing approach.

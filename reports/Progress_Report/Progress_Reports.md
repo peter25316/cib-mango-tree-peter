@@ -413,41 +413,77 @@ Created reproducible experiments in `experiments/` folder to document and valida
 ```
 cib-mango-tree-peter/
 ├── src/
-│   ├── components/
-│   │   ├── burst_detector_enhanced.py       # Enhanced with adaptive selection
-│   │   ├── data_analyzer.py                 # Core data processing
-│   │   ├── kleinberg_utils.py               # Burst detection algorithm
-│   │   ├── temporal_clusterer.py            # 2D and 24D clustering
-│   │   ├── content_coordination_detector.py # NetworkX coordination analysis
-│   │   ├── visualizer.py                    # Comprehensive visualizations
+│   ├── components/                          # All analysis components
+│   │   ├── burst_detector_enhanced.py       # Kleinberg burst detection with adaptive selection
+│   │   ├── data_analyzer.py                 # Data loading and preprocessing
+│   │   ├── kleinberg_utils.py               # Core burst detection algorithm
+│   │   ├── temporal_clusterer.py            # 2D and 24D temporal clustering
+│   │   ├── content_coordination_detector.py # NetworkX-based coordination analysis
+│   │   ├── visualizer.py                    # Visualization generation (PNG only)
 │   │   └── __init__.py
-│   ├── unified_pipeline.py                  # Main analysis pipeline (run from here)
-│   ├── tests/
-│   │   ├── test_suite.py                    # Component tests (legacy, needs update)
-│   │   └── __init__.py
-│   └── __init__.py
+│   ├── shellscripts/                        # Executable scripts
+│   │   └── unified_pipeline.py              # Main analysis pipeline (run from here)
+│   ├── docs/                                # Documentation files
+│   │   ├── ACF_ADF_BEFORE_BURST_DETECTION.md
+│   │   ├── COORDINATION_DETECTION_EXPLAINED.md
+│   │   ├── KLEINBERG_ALGORITHM_EXPLAINED.md
+│   │   ├── NETWORK_ANALYSIS_CONCEPTS.md
+│   │   ├── NETWORK_EDGE_ANALYSIS.md
+│   │   ├── TEMPORAL_CLUSTERING_EXPLAINED.md
+│   │   └── README.md
+│   └── tests/                               # Unit tests
+│       ├── test_suite.py
+│       └── __init__.py
 ├── demo/
 │   ├── interactive_burst_app.py             # Streamlit interactive dashboard
-│   └── README.md
+│   └── fig/                                 # Generated visualizations (PNG only)
+│       ├── hourly_posts.png
+│       ├── burst_rectangles.png
+│       ├── coordination_dashboard.png
+│       ├── network_*_visualization.png
+│       └── ... (all plots in PNG format)
 ├── data/
-│   └── sampledata_truthsocial.csv
-├── plots/                                    # Generated visualizations
-├── cache/                                    # Pipeline cache
+│   └── sampledata_truthsocial.csv           # Sample Truth Social dataset
+├── cache/                                    # Pipeline cache for faster reruns
+│   └── unified_pipeline_cache.pkl
+├── experiments/                              # Phase-by-phase experimental validation
+│   ├── phase1_content_only.py
+│   ├── phase2_add_patterns.py
+│   ├── phase3_add_retweets.py
+│   ├── phase4_add_temporal.py
+│   ├── phase5_behavioral.py
+│   ├── run_all_phases.py
+│   ├── PHASE_EXPERIMENTS.md
+│   └── results/
+│       ├── phase1_results.json
+│       ├── phase2_results.json
+│       ├── phase3_results.json
+│       ├── phase4_results.json
+│       └── phase5_results.json
 ├── reports/
-│   └── Progress_Report/
-│       └── Progress_Reports.md              # This file
+│   ├── Progress_Report/
+│   │   ├── Progress_Reports.md              # This file
+│   │   └── Markdown_CheatSheet/
+│   ├── Markdown_Report/                     # Markdown format reports
+│   ├── Latex_report/                        # LaTeX format reports
+│   │   └── fig/
+│   └── Word_Report/                         # Word format reports
+├── research_paper/
+│   ├── research_paper.md                    # Main research paper (Markdown)
+│   ├── research_paper.pdf                   # Generated PDF
+│   ├── Latex/                               # LaTeX version
+│   │   └── Fig/
+│   └── Word/                                # Word version
 ├── presentation/                             # Presentation materials
-├── proposal/                                 # Project proposal documents
-├── requirements.txt                         # Complete dependencies
-├── NETWORK_ANALYSIS_CONCEPTS.md            # Network metrics explained
-├── COORDINATION_DETECTION_EXPLAINED.md      # Coordination detection methodology
-├── NETWORK_EDGE_ANALYSIS.md                 # Network edge analysis guide
+├── proposal/                                 # Original project proposal
+├── cookbooks/                                # Jupyter notebooks and tutorials
+├── requirements.txt                         # Complete dependencies (Python 3.12+)
 ├── .gitignore
 └── README.md
 
-Note: test_suite.py tests core components (data loading, burst detection, 
-temporal clustering) but does NOT yet include tests for the new NetworkX-based 
-coordination detection. Tests are functional but should be expanded in future work.
+Note: All visualizations now save as PNG only (no HTML files or pop-ups).
+The unified_pipeline.py saves all plots to demo/fig/ directory.
+Tests cover core components but need expansion for NetworkX-based coordination detection.
 ```
 
 ## How to Run the Project
@@ -455,21 +491,36 @@ coordination detection. Tests are functional but should be expanded in future wo
 ### Method 1: Unified Pipeline (Recommended for full analysis)
 ```bash
 cd D:\GitHub\cib-mango-tree-peter
-python src/unified_pipeline.py
+python src/shellscripts/unified_pipeline.py
 ```
+- Runs complete analysis pipeline
+- Generates all visualizations in demo/fig/
+- Saves results to cache for faster reruns
+- Outputs: 20 PNG plots + coordination networks
 
 ### Method 2: Interactive Streamlit Dashboard (Recommended for exploration)
 ```bash
 cd D:\GitHub\cib-mango-tree-peter
 streamlit run demo/interactive_burst_app.py
 ```
+- Interactive web interface on http://localhost:8501
+- Upload custom datasets or use sample data
+- Adjust burst detection parameters (S, Gamma)
+- Explore coordination networks interactively
+- View sub-communities and hub accounts
 
 ### Method 3: Python Import
 ```python
-from src.unified_pipeline import UnifiedPipeline
+from src.shellscripts.unified_pipeline import UnifiedAnalysisPipeline
 
-pipeline = UnifiedPipeline(data_file='data/sampledata_truthsocial.csv')
-pipeline.run()
+# Initialize with custom paths
+pipeline = UnifiedAnalysisPipeline(
+    data_path='data/sampledata_truthsocial.csv',
+    plots_dir='demo/fig'
+)
+
+# Run complete pipeline
+pipeline.run_complete_pipeline()
 ```
 ```
 

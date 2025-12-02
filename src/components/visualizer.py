@@ -24,13 +24,8 @@ def plot_hourly_posts(posts_per_hour: pl.DataFrame, save_path: str = None):
                   title='Posts Per Hour on Truth Social Sample')
 
     if save_path:
-        # Save static version
+        # Save PNG only
         fig.write_image(save_path)
-        # Save interactive HTML version
-        html_path = get_html_path('hourly_posts', os.path.dirname(save_path))
-        fig.write_html(html_path)
-    else:
-        fig.show()
 
 
 def plot_acf(posts_per_hour: pl.DataFrame, save_path: str = None):
@@ -60,13 +55,8 @@ def plot_acf(posts_per_hour: pl.DataFrame, save_path: str = None):
     )
 
     if save_path:
-        # Save static version
+        # Save PNG only
         fig.write_image(save_path)
-        # Save interactive HTML version
-        html_path = get_html_path('acf_plot', os.path.dirname(save_path))
-        fig.write_html(html_path)
-    else:
-        fig.show()
 
 
 def plot_transformation_comparison(posts_per_hour: pl.DataFrame, posts_per_hour_transformed: pl.DataFrame, save_path: str = None):
@@ -115,13 +105,8 @@ def plot_transformation_comparison(posts_per_hour: pl.DataFrame, posts_per_hour_
     )
 
     if save_path:
-        # Save static version
+        # Save PNG only
         fig.write_image(save_path)
-        # Save interactive HTML version
-        html_path = get_html_path('transformation_comparison', os.path.dirname(save_path))
-        fig.write_html(html_path)
-    else:
-        fig.show()
 
 
 def plot_burst_rectangles(posts_per_hour_transformed: pl.DataFrame, burst_list: list, save_path: str = None):
@@ -191,13 +176,8 @@ def plot_burst_rectangles(posts_per_hour_transformed: pl.DataFrame, burst_list: 
     )
 
     if save_path:
-        # Save static version
+        # Save PNG only
         fig.write_image(save_path)
-        # Save interactive HTML version
-        html_path = get_html_path('burst_rectangles', os.path.dirname(save_path))
-        fig.write_html(html_path)
-    else:
-        fig.show()
 
 
 def plot_burst_gantt(burst_list: list, save_path: str = None):
@@ -218,11 +198,6 @@ def plot_burst_gantt(burst_list: list, save_path: str = None):
     fig.update_yaxes(categoryorder='array', categoryarray=sorted(gantt_df['burst_level_str'].unique(), reverse=True))
 
     if save_path:
-        # Save static version
+        # Save PNG only
         fig.write_image(save_path)
-        # Save interactive HTML version
-        html_path = get_html_path('burst_gantt', os.path.dirname(save_path))
-        fig.write_html(html_path)
-    else:
-        fig.show()
 

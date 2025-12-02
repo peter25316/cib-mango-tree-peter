@@ -21,8 +21,8 @@ ENV/
 .env.*
 
 # Jupyter
-.ipynb_checkpoints/
-*.ipynb
+#.ipynb_checkpoints/
+#*.ipynb
 
 # Editor directories
 .vscode/

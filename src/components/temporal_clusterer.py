@@ -132,9 +132,7 @@ class TemporalClusterer:
 
         if save_path:
             plt.savefig(save_path)
-            plt.close()
-        else:
-            plt.show()
+        plt.close()  # Always close to prevent display
 
     def run_clustering(self, n_clusters: int = 3):
         """
@@ -202,11 +200,9 @@ class TemporalClusterer:
         )
 
         if save_path:
-            fig.write_html(save_path)
-            # Also save a static version
-            fig.write_image(save_path.replace('.html', '.png'))
-        else:
-            fig.show()
+            # Save PNG only
+            png_path = save_path.replace('.html', '.png')
+            fig.write_image(png_path)
 
     def create_24d_activity_vectors(self) -> np.ndarray:
         """
@@ -399,11 +395,10 @@ class TemporalClusterer:
         )
 
         if save_path:
-            fig.write_html(save_path)
-            fig.write_image(save_path.replace('.html', '.png'))
-            print(f"24-D cluster heatmap saved to {save_path}")
-        else:
-            fig.show()
+            # Save PNG only
+            png_path = save_path.replace('.html', '.png')
+            fig.write_image(png_path)
+            print(f"24-D cluster heatmap saved to {png_path}")
 
         return fig
 
@@ -519,11 +514,10 @@ class TemporalClusterer:
         fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='rgba(128,128,128,0.3)')
 
         if save_path:
-            fig.write_html(save_path)
-            fig.write_image(save_path.replace('.html', '.png'))
-            print(f"Weekday/Weekend comparison plot saved to {save_path}")
-        else:
-            fig.show()
+            # Save PNG only
+            png_path = save_path.replace('.html', '.png')
+            fig.write_image(png_path)
+            print(f"Weekday/Weekend comparison plot saved to {png_path}")
 
         return fig
 
@@ -683,13 +677,9 @@ class TemporalClusterer:
         )
 
         if save_path:
-            # Save both HTML and PNG versions
-            html_path = save_path.replace('.png', '.html')
-            fig.write_html(html_path)
+            # Save PNG only
             fig.write_image(save_path)
             print(f"24-D cluster heatmap saved to {save_path}")
-        else:
-            fig.show()
 
         return fig
 
@@ -723,12 +713,9 @@ class TemporalClusterer:
             )
 
             if save_path:
-                html_path = save_path.replace('.png', '.html')
-                fig.write_html(html_path)
+                # Save PNG only
                 fig.write_image(save_path)
                 print(f"Basic cluster heatmap saved to {save_path}")
-            else:
-                fig.show()
 
     def create_cluster_fingerprint_plot(self, save_path: str = None):
         """
@@ -775,12 +762,9 @@ class TemporalClusterer:
             )
 
             if save_path:
-                html_path = save_path.replace('.png', '.html')
-                fig.write_html(html_path)
+                # Save PNG only
                 fig.write_image(save_path)
                 print(f"Activity fingerprint plot saved to {save_path}")
-            else:
-                fig.show()
 
             return fig
 
@@ -857,12 +841,9 @@ class TemporalClusterer:
         fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='rgba(128,128,128,0.3)')
 
         if save_path:
-            html_path = save_path.replace('.png', '.html')
-            fig.write_html(html_path)
+            # Save PNG only
             fig.write_image(save_path)
             print(f"Weekday/Weekend comparison plot saved to {save_path}")
-        else:
-            fig.show()
 
         return fig
 

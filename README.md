@@ -112,13 +112,13 @@ python run_all_phases.py
 - **[Complete Research Paper](research_paper/research_paper.md)** - Full academic paper with methodology, experimental results, discussion, and appendices
 
 ### Methodology Documentation
-- **[Coordination Detection](docs/COORDINATION_DETECTION_EXPLAINED.md)** - Multi-signal detection methodology
-- **[Kleinberg Algorithm](docs/KLEINBERG_ALGORITHM_EXPLAINED.md)** - Burst detection algorithm explanation
-- **[Network Analysis](docs/NETWORK_ANALYSIS_CONCEPTS.md)** - Graph metrics and structure classification
-- **[Temporal Clustering](docs/TEMPORAL_CLUSTERING_EXPLAINED.md)** - Alternative methodology (experimental)
+- **[Coordination Detection](src/docs/COORDINATION_DETECTION_EXPLAINED.md)** - Multi-signal detection methodology
+- **[Kleinberg Algorithm](src/docs/KLEINBERG_ALGORITHM_EXPLAINED.md)** - Burst detection algorithm explanation
+- **[Network Analysis](src/docs/NETWORK_ANALYSIS_CONCEPTS.md)** - Graph metrics and structure classification
+- **[Temporal Clustering](src/docs/TEMPORAL_CLUSTERING_EXPLAINED.md)** - Alternative methodology (experimental)
 
 ### Experimental Results
-- **[Phase Experiments](experiments/PHASE_EXPERIMENTS.md)** - Detailed phased evaluation (Phase 1-5) with results and analysis
+- **[Phase Experiments](src/tests/experiments/PHASE_EXPERIMENTS.md)** - Detailed phased evaluation (Phase 1-5) with results and analysis
 - **[Progress Reports](reports/Progress_Report/Progress_Reports.md)** - Weekly development log
 
 ## 🔬 Methodology Overview
