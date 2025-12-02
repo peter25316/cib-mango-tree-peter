@@ -1,6 +1,6 @@
 # .gitignore for cib-mango-tree-peter
 # Ignore local data files (sensitive or large) -- keep them out of the repo
-/data/
+#/data/
 # If you want to keep an empty `data/` directory in the repo, create an empty
 # file `data/.gitkeep` and then uncomment the next line:
 # !/data/.gitkeep

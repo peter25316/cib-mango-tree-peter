@@ -1,12 +1,25 @@
-## Abstract
+---
+title: "CIB Mango Tree: Detecting Coordinated Behavior on Social Media"
+short_title: "CIB Mango Tree — Coordination Detection"
+authors:
+  - name: "Long Hai Huynh"
+    affiliation: "Columbian College of Arts & Sciences, George Washington University"
+corresponding_author: "longh@gwu.edu"  
+date: "2025-12-02"
+version: "v0.1.0"
+repository: "https://github.com/peter25316/cib-mango-tree-peter"
+keywords: ["coordination detection", "burst detection", "Kleinberg", "temporal clustering", "network analysis", "retweet amplification"]
+abstract: >
+  Coordinated inauthentic behavior (CIB) on social media is typically detected using multi-signal systems that combine content similarity, hashtag coordination, URL sharing, retweet amplification, and behavioral patterns. Although widely adopted, no prior work has systematically quantified the marginal contribution of each signal under controlled conditions.
 
-Coordinated inauthentic behavior (CIB) on social media is typically detected using multi-signal systems that combine content similarity, hashtag coordination, URL sharing, retweet amplification, and behavioral patterns. Although widely adopted, no prior work has systematically quantified the marginal contribution of each signal under controlled conditions.
+  We introduce a phased additive evaluation framework that isolates the detection value of individual coordination signals while holding all other variables constant. Applied to 47,403 Truth Social posts spanning 20 days in early 2025, our experiments reveal a dramatic imbalance: retweet amplification alone accounts for 96.1% of all detected coordination pairs (1,067 of 1,110), while content similarity (0.4%), hashtag coordination (0.6%), URL sharing (0.3%), and ultra-conservative temporal synchronization (2.6%) contribute only 3.9% combined. Adding widely used behavioral patterns (mechanical posting intervals and activity fingerprints) more than doubles detections but introduces an estimated 50–70% false positive rate, leading to their principled rejection.
 
-We introduce a phased additive evaluation framework that isolates the detection value of individual coordination signals while holding all other variables constant. Applied to 47,403 Truth Social posts spanning 20 days in early 2025, our experiments reveal a dramatic imbalance: retweet amplification alone accounts for 96.1% of all detected coordination pairs (1,067 of 1,110), while content similarity (0.4%), hashtag coordination (0.6%), URL sharing (0.3%), and ultra-conservative temporal synchronization (2.6%) contribute only 3.9% combined. Adding widely used behavioral patterns (mechanical posting intervals and activity fingerprints) more than doubles detections but introduces an estimated 50–70% false positive rate, leading to their principled rejection.
+data_availability: "Sample data included in ./data; full dataset intended to be pushable to the repository."
+funding: "CIB Mango Tree"
+acknowledgements: "CIB Mango Tree"
+citation: "Long Hai Huynh (2025). CIB Mango Tree: Detecting Coordinated Behavior on Social Media. GitHub: https://github.com/peter25316/cib-mango-tree-peter"
+---
 
-Network analysis of the resulting 20 coordination networks shows that half exhibit mixed hierarchical-distributed topologies with organized sub-communities, challenging assumptions of homogeneous bot structures. Our findings imply that detection systems should treat retweet amplification as non-negotiable and deprioritize or exclude low-value or high-noise signals. The phased evaluation methodology is general and directly applicable to any multi-signal detection or classification task.
-
-Keywords: coordinated inauthentic behavior, retweet amplification, signal evaluation, social media manipulation, Truth Social
 
 ## 1. Introduction
 
@@ -208,13 +221,13 @@ Our coordination detection system comprises five sequential stages that transfor
 
 **Figure 1: Production Detection Pipeline**
 ```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│    Data     │───▶│    Burst    │───▶│Coordination │───▶│   Network   │
-│  Analysis   │    │  Detection  │    │  Detection  │    │  Analysis   │
-│             │    │             │    │             │    │             │
-│ 47,403 posts│    │  76 bursts  │    │ 1,110 pairs │    │ 20 networks │
-│ 16,468 accts│    │ 1,477 contribs│  │ 211 accounts│    │ 3 structures│
-└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+┌──────────────┐     ┌────────────────┐    ┌──────────────┐    ┌──────────────┐
+│    Data      │───▶│    Burst       │───▶│Coordination  │───▶│   Network    │
+│  Analysis    │     │  Detection     │    │  Detection   │    │  Analysis    │
+│              │     │                │    │              │    │              │
+│ 47,403 posts │     │  76 bursts     │    │ 1,110 pairs  │    │ 20 networks  │
+│ 16,468 accts │     │ 1,477 contribs │    │ 211 accounts │    │ 3 structures │
+└──────────────┘     └────────────────┘    └──────────────┘    └──────────────┘
 
 Alternative: Temporal Clustering (Experimental, Section 3.5)
 └─▶ 847 accounts → 4 behavioral clusters (not used for coordination detection)

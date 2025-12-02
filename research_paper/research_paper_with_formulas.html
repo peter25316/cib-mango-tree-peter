@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Research Paper</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']],
+                processEscapes: true
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax ready');
+                        document.title = 'MATHJAX_READY';
+                    });
+                }
+            }
+        };
+    </script>
+    <style>
+        @media print {
+            @page { size: letter; margin: 2.5cm; }
+            h1, h2, h3, h4 { page-break-after: avoid; }
+            table, pre, img { page-break-inside: avoid; }
+            .page-break { page-break-after: always; }
+        }
+        body { font-family: Georgia, 'Times New Roman', serif; font-size: 10pt; line-height: 1.4; color: #000; max-width: 900px; margin: 0 auto; padding: 15px; }
+        .title-page { text-align: center; padding: 30px 15px; margin-bottom: 15px; }
+        .paper-title { font-size: 1.5em; color: #1a1a1a; margin-bottom: 20px; line-height: 1.2; border: none; font-weight: bold; }
+        .authors { font-size: 0.95em; margin: 15px 0; }
+        .date { font-size: 0.9em; color: #555; margin: 10px 0; }
+        .abstract { text-align: left; margin: 25px auto; max-width: 750px; padding: 12px; background: #f8f9fa; border-left: 3px solid #3498db; }
+        .abstract h2 { font-size: 1em; margin: 0 0 8px 0; border: none; font-weight: bold; }
+        .abstract p { text-align: justify; line-height: 1.4; font-size: 0.9em; }
+        .keywords, .repository { text-align: left; margin: 8px auto; max-width: 750px; font-size: 0.85em; }
+        h1 { font-size: 1.4em; color: #1a1a1a; border-bottom: 2px solid #3498db; padding-bottom: 6px; margin: 18px 0 10px 0; font-weight: bold; }
+        h2 { font-size: 1.2em; color: #2a2a2a; border-bottom: 1px solid #95a5a6; padding-bottom: 4px; margin: 15px 0 8px 0; font-weight: bold; }
+        h3 { font-size: 1.1em; color: #3a3a3a; margin: 12px 0 6px 0; font-weight: bold; }
+        h4 { font-size: 1.05em; color: #4a4a4a; margin: 10px 0 5px 0; font-weight: bold; }
+        p { margin: 6px 0; text-align: justify; line-height: 1.4; }
+        em { font-style: italic; }
+        p:has(> em:only-child), img + p { text-align: center; font-size: 0.9em; color: #555; margin: 8px 0; }
+        strong { font-weight: bold; }
+        ul, ol { margin: 6px 0; padding-left: 25px; }
+        li { margin: 3px 0; line-height: 1.4; }
+        table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 0.8em; }
+        th, td { border: 1px solid #ccc; padding: 5px 6px; text-align: left; }
+        th { background-color: #3498db; color: white; font-weight: bold; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        code { background-color: #f4f4f4; padding: 1px 3px; border-radius: 2px; font-family: 'Courier New', monospace; font-size: 0.85em; }
+        pre { background-color: #f4f4f4; padding: 8px; border-radius: 3px; overflow-x: auto; font-size: 0.8em; line-height: 1.3; margin: 8px 0; }
+        pre code { background-color: transparent; padding: 0; }
+        blockquote { border-left: 3px solid #3498db; padding-left: 10px; margin: 8px 0 8px 0; color: #555; font-style: italic; }
+        a { color: #3498db; text-decoration: none; }
+        img { max-width: 100%; height: auto; display: block; margin: 12px auto; border: 1px solid #ddd; padding: 3px; background: white; }
+        .MathJax { font-size: 1em !important; }
+    </style>
+</head>
+<body>
+<div class="title-page">
+<h1 class="paper-title">CIB Mango Tree: Detecting Coordinated Behavior on Social Media</h1>
+<div class="authors">
+<p><strong>Long Hai Huynh</strong><br>
+Columbian College of Arts & Sciences, George Washington University<br>
+longh@gwu.edu</p>
+</div>
+<p class="date">2025-12-02</p>
+<div class="abstract">
+<h2>Abstract</h2>
+<p>Coordinated inauthentic behavior (CIB) on social media is typically detected using multi-signal systems that combine content similarity, hashtag coordination, URL sharing, retweet amplification, and behavioral patterns. Although widely adopted, no prior work has systematically quantified the marginal contribution of each signal under controlled conditions. We introduce a phased additive evaluation framework that isolates the detection value of individual coordination signals while holding all other variables constant. Applied to 47,403 Truth Social posts spanning 20 days in early 2025, our experiments reveal a dramatic imbalance: retweet amplification alone accounts for 96.1% of all detected coordination pairs (1,067 of 1,110), while content similarity (0.4%), hashtag coordination (0.6%), URL sharing (0.3%), and ultra-conservative temporal synchronization (2.6%) contribute only 3.9% combined. Adding widely used behavioral patterns (mechanical posting intervals and activity fingerprints) more than doubles detections but introduces an estimated 50–70% false positive rate, leading to their principled rejection. data_availability: "Sample data included in ./data; full dataset intended to be pushable to the repository."</p>
+</div>
+<p class="keywords"><strong>Keywords:</strong> </p>
+<p class="repository"><strong>Repository:</strong> <a href="https://github.com/peter25316/cib-mango-tree-peter">https://github.com/peter25316/cib-mango-tree-peter</a></p>
+</div>
+<div class="page-break"></div>
+<h2 id="1-introduction">1. Introduction</h2>
+<p>Social media platforms have become primary channels for public discourse, political mobilization, and information dissemination. However, this democratization of communication has been accompanied by systematic manipulation through coordinated inauthentic behavior (CIB)—organized campaigns employing networks of accounts to artificially amplify narratives, suppress dissent, or create false consensus. Recent surveys highlight the pervasiveness of such coordination across platforms, spanning both legitimate social movements and disinformation campaigns [Mannocci et al., 2024]. The scale and sophistication of coordinated operations pose fundamental challenges to platform integrity and democratic processes.</p>
+<p>Detecting coordinated behavior requires distinguishing genuine grassroots activity from orchestrated campaigns—a problem complicated by three factors. First, coordination manifests through <em>heterogeneous signals</em>: identical content, synchronized timing, shared hashtags, URL distribution, and amplification networks. Second, individual signals produce high false positive rates when analyzed in isolation; for instance, users in the same timezone naturally exhibit similar posting patterns, and legitimate activists coordinate hashtag campaigns. Third, the <em>relative importance</em> of different signals remains empirically unvalidated—existing systems combine multiple features without quantifying marginal contributions.</p>
+<p>Prior work on coordination detection falls into three categories. <em>Supervised classification approaches</em> train on labeled bot accounts using profile features and activity patterns [Varol et al., 2017; Cresci et al., 2017; Yang et al., 2020], but require platform-specific training data and fail to generalize across domains. <em>Content-based methods</em> detect coordination through text similarity or narrative alignment [Pacheco et al., 2020], missing coordination that manifests through amplification rather than duplication. <em>Network analysis approaches</em> identify communities via graph clustering [Ferrara et al., 2016], often applied post-hoc without systematic evaluation of which network properties indicate coordination. Critically, <strong>no prior work systematically decomposes and quantifies the contribution of individual coordination signals</strong> in a controlled experimental framework. Systems papers typically include all available features without isolating their marginal value, making it impossible to determine which signals are essential versus supplementary.</p>
+<p><strong>Our Contribution.</strong> We address this gap through a phased additive evaluation methodology that isolates the marginal contribution of each coordination signal. We design a five-phase framework where each phase introduces exactly one signal type while holding all other parameters constant—enabling causal attribution of detection improvements to specific signals. Surprisingly, we find that <strong>retweet amplification alone accounts for more than 96% of all detected coordination</strong> on Truth Social, while content similarity, hashtag coordination, URL sharing, and temporal synchronization contribute only 4% combined. This extreme signal imbalance has direct implications for resource allocation in coordination detection systems: efforts should prioritize retweet analysis over comprehensive multi-signal feature engineering.</p>
+<p>Beyond quantifying signal contributions, we characterize coordination network structures using graph-theoretic analysis, revealing that 50% of detected networks exhibit mixed hierarchical-distributed topology rather than homogeneous bot network patterns. We also systematically evaluate and reject behavioral pattern detection—demonstrating that mechanical posting intervals and identical activity fingerprints produce unacceptable false positive rates by conflating coordination with timezone coincidence and legitimate scheduling tools.</p>
+<p><strong>Scope and Limitations.</strong> Our evaluation uses Truth Social data (20 days, 47,403 posts from 16,468 accounts), raising generalizability questions regarding other platforms, languages, and coordination tactics. We lack ground-truth labels for coordinated accounts, preventing traditional precision/recall calculation; instead, we employ confidence scoring and multi-signal corroboration. Temporal analysis is limited by UTC timestamp normalization without original timezone metadata. Despite these limitations, our phased methodology provides the first systematic quantification of coordination signal contributions.</p>
+<p><strong>Paper Organization.</strong> Section 2 reviews related work. Section 3 describes our methodology: burst detection with adaptive selection (3.2), temporal clustering (3.3), multi-signal coordination detection (3.4), network analysis (3.5), and phased validation framework (3.7). Section 4 presents system architecture. Section 5 reports experimental results. Section 6 discusses findings and limitations. Section 7 concludes. Appendices provide algorithmic details (A), formal network metric definitions (B), implementation specifications (C), and supplementary experimental results (D).</p>
+<h2 id="2-related-work">2. Related Work</h2>
+<p>We organize related work around three research questions our phased evaluation addresses: (i) Which coordination signals provide detection value? (ii) How should coordination networks be characterized? (iii) When should signals be rejected?</p>
+<h3 id="21-coordination-detection-signals">2.1 Coordination Detection Signals</h3>
+<p><strong>Content-based approaches.</strong> Pacheco et al. [2020] detect coordinated groups through retweet amplification, identifying accounts that frequently retweet the same sources within temporal windows. Their analysis of White Helmets disinformation demonstrates that retweet networks reveal coordination structures. However, Pacheco et al. evaluate only retweet signals—they do not test whether adding content similarity, hashtag coordination, or temporal synchronization improves detection. Our Phase 3 introduces retweet amplification detection and quantifies its contribution relative to other signals, validating Pacheco et al.'s retweet focus while revealing that multi-signal systems investing resources in content analysis gain minimal marginal value.</p>
+<p><strong>Supervised classification.</strong> Bot detection work employs supervised classifiers combining profile features (follower counts, account age), activity patterns (tweet frequency, timing), and content features (linguistic style). Varol et al. [2017] achieve strong performance using random forests on labeled Twitter bot datasets. Cresci et al. [2017] show that simple feature-based classifiers fail against sophisticated "social spambots" that mimic human behavior, advocating for temporal and network features. Yang et al. [2020] improve generalization through strategic training data selection.</p>
+<p>These approaches differ fundamentally from ours in three ways. First, they require labeled training data (bot vs. human), unavailable for emerging platforms and evolving adversaries. Second, they produce binary classifications rather than coordination networks showing <em>how</em> accounts work together. Third, the relative contribution of individual features remains unquantified—classifiers use all available features simultaneously, making it difficult to determine whether performance derives primarily from profile features, activity patterns, or content analysis. Our phased evaluation directly measures each signal's contribution, demonstrating that retweet detection provides the vast majority of detection value while other signals contribute marginally.</p>
+<p><strong>Temporal approaches.</strong> Kleinberg [2003] introduced burst detection for identifying periods of elevated activity in document streams, modeling arrival rates as a two-state automaton where state transitions incur costs proportional to change magnitude. While applied to social media for hashtag emergence and event detection, these applications focus on aggregate-level bursts rather than identifying <em>which accounts</em> participate in coordinated bursts. We extend Kleinberg's algorithm with adaptive contributor selection (Section 3.2) that filters burst participants, focusing on coordinated actors while reducing noise from casual participants.</p>
+<p><strong>Gap in prior work.</strong> Existing coordination detection combines multiple signals—content similarity, temporal patterns, network features, behavioral fingerprints—without systematic evaluation of individual contributions [Mannocci et al., 2024]. This creates two problems: (i) unclear which signals are essential versus supplementary, making resource allocation difficult; (ii) implicit assumption that diverse features provide comparable value, potentially investing effort in low-value signals. Our phased validation (Section 5) fills this gap by isolating each signal's marginal contribution under controlled conditions.</p>
+<h3 id="22-network-structure-characterization">2.2 Network Structure Characterization</h3>
+<p><strong>Bot network analysis.</strong> Ferrara et al. [2016] survey bot detection methods emphasizing network analysis, arguing that bots exhibit distinctive connectivity patterns (high out-degree, low clustering coefficient, hub-and-spoke topology). However, their analysis focuses on bot <em>identification</em> rather than coordination <em>detection</em>—coordinated human accounts may exhibit bot-like patterns, and coordinated networks may not follow simple bot topologies.</p>
+<p><strong>Network topology.</strong> Our analysis employs standard graph-theoretic metrics implemented in NetworkX [Hagberg et al., 2008]: density (fraction of possible edges present), clustering coefficient (tendency to form triangles), degree centrality (number of direct connections), and modularity for community detection [Newman, 2006]. We classify networks as hierarchical (centralized hub-and-spoke), distributed (peer-to-peer mesh), or mixed (hybrid with sub-communities) based on the combination of density and clustering coefficient patterns.</p>
+<p><strong>Structure classification.</strong> Prior work often implicitly assumes coordination manifests through homogeneous structures—typically hierarchical bot networks or distributed peer-to-peer coordination. Our results (Section 5.5) reveal greater structural diversity: half of detected networks exhibit mixed topology (neither pure hierarchical nor distributed), indicating organized sub-communities rather than monolithic structure. This pattern suggests multiple tightly coordinated groups with sparse connections between groups—a sophisticated organizational structure that challenges detection systems modeling coordination as homogeneous patterns.</p>
+<p><strong>Distinction: Hub accounts vs. coordination hubs.</strong> A critical but often conflated distinction exists between: (i) <em>hub accounts</em>—accounts with highest degree centrality within coordination networks, representing coordinators who work <em>with</em> many others; (ii) <em>coordination hubs</em>—accounts being systematically retweeted <em>by</em> coordinated networks, representing amplification targets rather than coordinators. Prior work discusses network hubs but does not systematically distinguish these roles. Our analysis (Section 5.5) separates them: hub accounts answer <em>who organizes coordination</em>, coordination hubs answer <em>what content gets amplified</em>.</p>
+<h3 id="23-signal-rejection-and-false-positives">2.3 Signal Rejection and False Positives</h3>
+<p><strong>Behavioral pattern analysis.</strong> Many coordination detection systems incorporate behavioral signals: mechanical posting intervals (accounts posting at regular intervals suggesting automation), identical activity patterns (accounts with similar hourly posting distributions suggesting coordination or bots). These features have intuitive appeal—automated accounts should exhibit mechanical timing, coordinated accounts should post at similar times.</p>
+<p><strong>The false positive problem.</strong> However, behavioral patterns suffer from a fundamental limitation: difficulty distinguishing coordination from coincidence. Accounts in the same timezone naturally post at similar hours (lunch break, evening). Social media managers using scheduling tools exhibit mechanical posting intervals legitimately. Friends with similar work schedules show identical activity patterns organically. Without ground truth labels, there is limited ability to separate coordinated bots from normal users exhibiting similar patterns for benign reasons.</p>
+<p><strong>Gap in prior work: Limited rejection analysis.</strong> Multi-signal systems typically include all available features, with limited systematic evaluation of when signals should be excluded. Mannocci et al.'s [2024] survey notes that "most systems combine multiple signals but do not evaluate their individual contributions"—but also does not address when signals should be <em>rejected</em> due to high false positive rates. Feature selection typically focuses on inclusion criteria rather than principled exclusion.</p>
+<p>Our Phase 5 analysis (Section 5.7) provides systematic evaluation of behavioral patterns. We show that adding mechanical posting intervals and identical activity patterns more than doubles detection counts at unacceptable false positive cost, primarily because UTC normalization without original timezone metadata prevents attribution of patterns to coordination versus geography. We provide quantitative justification for excluding behavioral signals despite their intuitive appeal—principled signal rejection based on false positive analysis.</p>
+<h3 id="24-coordination-detection-frameworks">2.4 Coordination Detection Frameworks</h3>
+<p>Mannocci et al. [2024] provide the most comprehensive recent survey, categorizing coordination detection methods into content-based, network-based, and temporal approaches. They identify key challenges: (i) distinguishing coordination from organic similarity; (ii) handling multi-platform coordination; (iii) balancing false positives versus false negatives; (iv) adapting to adversarial evasion. The survey emphasizes that "most systems combine multiple signals but do not evaluate their individual contributions," directly highlighting the gap our work addresses.</p>
+<p>The Digital Observatory's Coordination Network Toolkit [Digital Observatory, 2024] provides practitioner-oriented tools for detecting coordinated link sharing and hashtag campaigns, focusing on rapid triage for investigative journalists. Our work complements this by providing empirical validation of which signals provide the most detection value, enabling more efficient resource allocation.</p>
+<h3 id="25-summary-gaps-addressed">2.5 Summary: Gaps Addressed</h3>
+<p>Our work addresses three gaps in prior coordination detection research:</p>
+<ul>
+<li>
+<p><strong>No systematic signal quantification.</strong> Prior work combines multiple signals without isolating individual contributions. Our phased evaluation measures each signal's marginal value, revealing that retweet amplification dominates virtually all other signals combined.</p>
+</li>
+<li>
+<p><strong>No principled signal rejection.</strong> Existing systems focus on feature inclusion without systematic evaluation of when features should be excluded. Our analysis demonstrates that behavioral patterns produce unacceptable false positive rates, providing quantitative justification for exclusion.</p>
+</li>
+<li>
+<p><strong>Limited network structure interpretation.</strong> While network metrics are well-established, their coordination-specific interpretation remains underexplored. Our finding that half of networks exhibit mixed topology challenges assumptions about homogeneous coordination structures.</p>
+</li>
+</ul>
+<h2 id="3-methodology">3. Methodology</h2>
+<h3 id="31-problem-formulation">3.1 Problem Formulation</h3>
+<p>We formalize coordinated inauthentic behavior detection as a graph construction problem where nodes represent social media accounts and edges represent detected coordination relationships.</p>
+<p><strong>Definition 1 (Coordination Evidence).</strong> Let $E = {e_1, e_2, \ldots, e_n}$ denote a set of evidence types. Each evidence type $e_i$ represents a detectable coordination signal: content similarity ($e_{\text{content}}$), hashtag coordination ($e_{\text{hashtag}}$), URL sharing ($e_{\text{url}}$), retweet amplification ($e_{\text{rt}}$), and temporal synchronization ($e_{\text{temporal}}$).</p>
+<p><strong>Definition 2 (Coordination Pair).</strong> A coordination pair $(a_i, a_j, c, E')$ consists of two accounts $a_i, a_j$, confidence score $c \in [0,1]$, and evidence set $E' \subseteq E$ where $|E'| \geq 1$.</p>
+<p><strong>Definition 3 (Coordination Network).</strong> A coordination network $G = (V, E)$ is an undirected graph where $V$ represents accounts and $E$ represents coordination relationships. Each edge $e \in E$ has weight $w(e)$ representing the maximum confidence score among all evidence types connecting the two accounts.</p>
+<p><strong>Definition 4 (Temporal Burst).</strong> A temporal burst $B = (t_{\text{start}}, t_{\text{end}}, s)$ represents a time interval $[t_{\text{start}}, t_{\text{end}}]$ where posting activity significantly exceeds baseline levels, with state $s \in {0, 1, 2, \ldots}$ indicating intensity.</p>
+<p>Our detection pipeline operates in four stages: (1) burst detection identifies <em>when</em> coordinated activity occurs (Section 3.2); (2) multi-signal coordination detection identifies <em>which</em> accounts coordinate (Section 3.3); (3) network analysis reveals <em>how</em> coordination is organized (Section 3.4). We also evaluate temporal clustering as an alternative methodology (Section 3.5), but find it unsuitable for production coordination detection due to fundamental limitations in distinguishing coordination from timezone coincidence.</p>
+<h3 id="32-production-methodology-burst-based-coordination-detection">3.2 Production Methodology: Burst-Based Coordination Detection</h3>
+<p>Our production system uses burst detection to identify temporal windows of elevated activity, then applies multi-signal analysis to detect coordination within these windows.</p>
+<h4 id="321-burst-detection-with-kleinbergs-algorithm">3.2.1 Burst Detection with Kleinberg's Algorithm</h4>
+<p>We employ Kleinberg's [2003] burst detection algorithm to identify periods of elevated posting activity. The algorithm models document arrival as an infinite-state automaton where each state $q \in {0, 1, 2, \ldots}$ corresponds to an emission rate $r_q = s^q \cdot r_0$, with baseline rate $r_0$ and scaling factor $s &gt; 1$. State transitions incur costs proportional to change magnitude, and dynamic programming finds the optimal state sequence minimizing total cost (see Appendix A.1 for mathematical formulation).</p>
+<p><strong>Parameter selection.</strong> We use $s = 2.0$ (detecting activity doubling) and $\gamma = 1.0$ (balanced sensitivity). These values identify bursts where posting rates increase by at least 2× over baseline while avoiding excessive fragmentation from minor fluctuations.</p>
+<h4 id="322-adaptive-contributor-selection">3.2.2 Adaptive Contributor Selection</h4>
+<p>Standard burst detection identifies all accounts posting during burst intervals. We enhance this through threshold-based filtering that focuses on accounts with sustained burst participation. Accounts are selected if they meet any of: (i) posting frequency ≥ max(3, 2% of total burst activity); (ii) membership in top 85% by posting frequency. This filtering reduces noise from casual participants while retaining accounts exhibiting sustained burst participation (detailed algorithm in Appendix A.2).</p>
+<h3 id="33-multi-signal-coordination-detection">3.3 Multi-Signal Coordination Detection</h3>
+<p>We detect coordination through five evidence types, each with specific thresholds validated to minimize false positives while maintaining detection coverage. Table 1 summarizes all signals, thresholds, and confidence scoring.</p>
+<p><strong>Table 1: Coordination Detection Signals</strong></p>
+<table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>Detection Criteria</th>
+<th>Confidence Score</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Content Similarity</strong></td>
+<td>SequenceMatcher ratio ≥0.95 (identical) or ≥0.85 (high similarity)</td>
+<td>1.0 for identical; sim × 1.2 for high similarity</td>
+<td>Copy-paste coordination leaves textual fingerprints</td>
+</tr>
+<tr>
+<td><strong>Hashtag Coordination</strong></td>
+<td>Jaccard similarity ≥0.6 with ≥2 shared hashtags</td>
+<td>min(Jaccard × 1.5, 1.0)</td>
+<td>Hashtags are deliberately chosen campaign identifiers</td>
+</tr>
+<tr>
+<td><strong>URL Coordination</strong></td>
+<td>≥1 shared URL within same burst</td>
+<td>min(shared_count × 0.8, 1.0)</td>
+<td>Coordinated link distribution even with single URL</td>
+</tr>
+<tr>
+<td><strong>Retweet Amplification</strong></td>
+<td>≥3 accounts retweeting same source</td>
+<td>min(retweeter_count / 10, 1.0)</td>
+<td>Creates C(n,2) pairs reflecting amplification structure</td>
+</tr>
+<tr>
+<td><strong>Temporal Sync</strong></td>
+<td>≤30 second window, ≥3 synchronized posts, ≥80% confidence</td>
+<td>(timing_precision + sync_strength) / 2</td>
+<td>Ultra-conservative to avoid timezone false positives</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Content similarity</strong> uses Python's SequenceMatcher to compute character-level similarity between posts within the same burst. Content is normalized via lowercase conversion and whitespace collapsing.</p>
+<p><strong>Hashtag and URL coordination</strong> use set-based similarity metrics. Hashtags are extracted via regex and normalized to lowercase; URLs are normalized by stripping tracking parameters.</p>
+<p><strong>Retweet amplification</strong> identifies accounts retweeting the same source. If $n$ accounts retweet source $s$, we create $\binom{n}{2}$ coordination pairs, reflecting the amplification network structure. The minimum threshold of 3 retweeters balances sensitivity against specificity.</p>
+<p><strong>Temporal synchronization</strong> uses ultra-conservative thresholds (30-second windows requiring multiple instances) to ensure only accounts with suspiciously precise timing are flagged. This addresses the high false positive risk from same-timezone users naturally posting at similar times.</p>
+<p><strong>Confidence scoring.</strong> Multi-signal confidence is computed as the maximum across all detected evidence types:</p>
+<p>$$c_{\text{total}}(a_i, a_j) = \max_{e \in E'} c_e(a_i, a_j)$$</p>
+<p>We use maximum rather than sum because evidence types are not independent—accounts coordinating through content similarity may also coordinate through hashtags. Maximum confidence reflects the strongest evidence, avoiding inflation from correlated signals. Pairs with multiple evidence types ($|E'| \geq 2$) have substantially higher detection confidence.</p>
+<h3 id="34-network-analysis-with-networkx">3.4 Network Analysis with NetworkX</h3>
+<p>From coordination pairs, we construct an undirected graph $G = (V, E)$ where vertices represent accounts and edges represent coordination relationships. Edge weights equal the maximum confidence across all evidence types connecting two accounts.</p>
+<p><strong>Network identification.</strong> Coordination networks are identified as connected components—maximal sets of accounts where every pair has at least one path connecting them.</p>
+<p><strong>Network topology.</strong> Our analysis employs standard graph-theoretic metrics using NetworkX [Hagberg et al., 2008]: <em>density</em> (fraction of possible edges present), <em>clustering coefficient</em> (tendency to form triangles), <em>degree centrality</em> (number of direct connections), and <em>modularity</em> for community detection [Newman, 2006]. Formal definitions of all metrics appear in Appendix B.</p>
+<p><strong>Structure classification.</strong> Networks are classified based on density and clustering patterns:
+- <strong>Hierarchical (hub-and-spoke):</strong> Low clustering and centralized degree distribution
+- <strong>Distributed (peer-to-peer):</strong> High clustering and high density
+- <strong>Mixed (sub-communities):</strong> High clustering with low density, indicating multiple tight groups with sparse inter-group connections</p>
+<p>We use maximum rather than sum because evidence types are not independent—accounts coordinating through content similarity may also coordinate through hashtags. Maximum confidence reflects the strongest evidence, avoiding inflation from correlated signals. Pairs with multiple evidence types ($|E'| \geq 2$) have substantially higher detection confidence.</p>
+<h3 id="35-alternative-methodology-temporal-clustering-experimental">3.5 Alternative Methodology: Temporal Clustering (Experimental)</h3>
+<p>We evaluate temporal clustering as an alternative approach to coordination detection, grouping accounts by posting time patterns. While this approach successfully identifies behavioral clusters, we find it unsuitable for production coordination detection due to fundamental limitations.</p>
+<h4 id="351-feature-engineering">3.5.1 Feature Engineering</h4>
+<p>We construct two feature representations. <em>2D features</em> (coarse-grained) extract mean posting hour and weekend activity ratio for each account. <em>24D features</em> (fine-grained) construct hourly activity distribution vectors $\mathbf{v}(a) \in \mathbb{R}^{24}$ where:</p>
+<p>$$v_i(a) = \frac{|{p \in P_a : \text{hour}(p) = i}|}{|P_a|}$$</p>
+<p>This represents the probability distribution over hours of day for account $a$.</p>
+<h4 id="352-clustering-algorithm">3.5.2 Clustering Algorithm</h4>
+<p>We apply K-means clustering with StandardScaler normalization (zero mean, unit variance). Optimal cluster count $k$ is determined via the elbow method: plot within-cluster sum of squares (inertia) versus $k$, select the value where marginal inertia reduction diminishes (the "elbow" point). This visual approach identifies natural groupings without requiring ground-truth labels.</p>
+<h4 id="353-limitations-why-not-used-for-coordination-detection">3.5.3 Limitations: Why Not Used for Coordination Detection</h4>
+<p>Temporal clustering has three critical limitations that prevent its use for coordination detection:</p>
+<p><strong>1. Cannot distinguish coordination from coincidence.</strong> Accounts posting at similar times could be: (i) coordinated bots; (ii) users in the same timezone; (iii) people with similar work schedules; (iv) friends with similar routines. The method cannot differentiate these cases.</p>
+<p><strong>2. UTC normalization without timezone metadata.</strong> All timestamps are UTC-normalized without original timezone information. Two accounts posting at "2pm UTC" might be: (i) coordinated bots in the same timezone; (ii) unrelated users in London (2pm local) and New York (9am local). Without timezone data, this ambiguity is unresolvable.</p>
+<p><strong>3. High false positive risk.</strong> Behavioral pattern detection conflates coordination with legitimate patterns (scheduling tools, work hours, timezone coincidence). Our experiments (Section 5.7) show this produces 50–70% estimated false positive rates.</p>
+<p><strong>Use cases.</strong> Despite these limitations for coordination detection, temporal clustering is useful for: (i) characterizing behavioral diversity in datasets; (ii) post-hoc investigation of detected networks; (iii) exploratory data analysis.</p>
+<h3 id="36-phased-validation-framework">3.6 Phased Validation Framework</h3>
+<p>To isolate individual signal contributions, we design a five-phase additive evaluation where each phase introduces exactly one signal type while holding all other parameters constant.</p>
+<p><strong>Controlled variables (constant across phases):</strong> Dataset (47,403 posts, 76 bursts), burst detection parameters ($s=2.0, \gamma=1.0$), contributor filtering criteria, similarity thresholds, and pair construction method.</p>
+<p><strong>Phase definitions:</strong>
+- <strong>Phase 1 (baseline):</strong> Content similarity only
+- <strong>Phase 2:</strong> Phase 1 + hashtag and URL coordination
+- <strong>Phase 3:</strong> Phase 2 + retweet amplification
+- <strong>Phase 4 (production):</strong> Phase 3 + ultra-conservative temporal synchronization
+- <strong>Phase 5 (rejected):</strong> Phase 4 + behavioral patterns (mechanical intervals, activity fingerprints)</p>
+<p><strong>Marginal contribution.</strong> The marginal contribution of signal $e_i$ introduced in Phase $k$ is:</p>
+<p>$$\Delta_k = \frac{\text{pairs}<em>k - \text{pairs}</em>{k-1}}{\text{pairs}_{k-1}} \times 100\%$$</p>
+<p>By introducing one signal per phase while holding all else constant, we enable causal attribution: observed detection changes are attributable to the introduced signal rather than confounding factors.</p>
+<h3 id="37-implementation">3.7 Implementation</h3>
+<p>Our system is implemented in Python using Polars for high-performance dataframe operations, NetworkX for graph analysis, and scikit-learn for clustering. Complete source code, documentation, and library versions are available in the supplementary materials for reproducibility (see Appendix C for implementation details).</p>
+<h2 id="4-system-architecture">4. System Architecture</h2>
+<p>Our coordination detection system comprises five sequential stages that transform raw social media data into annotated coordination networks (Figure 1).</p>
+<p><strong>Pipeline overview.</strong> The production pipeline comprises four stages: Stage 1 (Data Analysis) loads and preprocesses posts with UTC timestamp normalization. Stage 2 (Burst Detection) applies Kleinberg's algorithm to identify 76 temporal bursts from 480 hours of activity. Stage 3 (Coordination Detection) applies five detection methods (Table 1) to identify coordination pairs within bursts. Stage 4 (Network Analysis) constructs graphs via NetworkX, identifies connected components, and classifies network structures. Temporal clustering (Section 3.5) is evaluated as an alternative methodology but not included in the production pipeline.</p>
+<p><strong>Figure 1: Production Detection Pipeline</strong></p>
+<pre><code>┌──────────────┐     ┌────────────────┐    ┌──────────────┐    ┌──────────────┐
+│    Data      │───▶│    Burst       │───▶│Coordination  │───▶│   Network    │
+│  Analysis    │     │  Detection     │    │  Detection   │    │  Analysis    │
+│              │     │                │    │              │    │              │
+│ 47,403 posts │     │  76 bursts     │    │ 1,110 pairs  │    │ 20 networks  │
+│ 16,468 accts │     │ 1,477 contribs │    │ 211 accounts │    │ 3 structures │
+└──────────────┘     └────────────────┘    └──────────────┘    └──────────────┘
+
+Alternative: Temporal Clustering (Experimental, Section 3.5)
+└─▶ 847 accounts → 4 behavioral clusters (not used for coordination detection)
+</code></pre>
+<p><strong>Computational performance.</strong> Total pipeline execution takes approximately 2-3 minutes on consumer hardware (single-threaded) for the 47k post dataset. The dominant cost is pairwise comparison within bursts, which scales $O(b \cdot c^2)$ where $b$ is burst count and $c$ is contributors per burst. Adaptive contributor selection (Section 3.2.2) reduces average burst size, making $O(n^2)$ comparison tractable.</p>
+<p><strong>Limitations.</strong> Three architectural constraints affect generalizability: (1) UTC normalization without original timezone metadata prevents cross-timezone coordination detection; (2) memory-resident NetworkX graphs limit scalability to networks under millions of nodes; (3) single-platform design requires adaptation for cross-platform analysis.</p>
+<p><strong>Reproducibility.</strong> Complete source code, documentation, and experimental scripts are available as open-source software. Full implementation details including library versions, caching mechanisms, validation procedures, and extensibility patterns appear in Appendix C.</p>
+<h2 id="5-experimental-results">5. Experimental Results</h2>
+<h3 id="51-overview-of-results">5.1 Overview of Results</h3>
+<p>Our phased evaluation reveals a striking signal hierarchy in coordination detection. We summarize the key findings before presenting detailed analysis:</p>
+<p><strong>Signal contributions.</strong> Retweet amplification alone detects 96.1% of all coordination pairs (1,067 of 1,110), while content similarity contributes 0.4% (4 pairs), hashtag coordination 0.6% (7 pairs), URL coordination 0.3% (3 pairs), and temporal synchronization 2.6% (29 pairs). This 25:1 ratio between retweet detection and all other signals combined contradicts the implicit assumption in multi-signal systems that diverse features provide comparable value.</p>
+<p><strong>Phased progression.</strong> Detection coverage increases dramatically with retweet amplification:
+- Phase 1 (content only): 4 pairs (0.36% of final coverage)
+- Phase 2 (+ hashtags/URLs): 14 pairs (+250%, 1.26% coverage)
+- Phase 3 (+ retweets): 1,081 pairs (+7,621%, 97.4% coverage)
+- Phase 4 (+ temporal): 1,110 pairs (+2.7%, production configuration)
+- Phase 5 (+ behavioral): 2,275 pairs (+105%, <strong>rejected</strong> due to 50–70% estimated false positive rate)</p>
+<p><strong>Network structures.</strong> Analysis of 1,110 coordination pairs reveals 20 distinct networks comprising 211 accounts. Contrary to assumptions of homogeneous bot network topology, 50% exhibit mixed hierarchical-distributed structure, 30% are hierarchical (hub-and-spoke), and 20% are distributed (peer-to-peer). The largest network (153 accounts) shows low density (0.049) but high clustering (0.707), indicating organized sub-communities rather than monolithic coordination.</p>
+<p><strong>Key implication.</strong> Retweet amplification is non-negotiable for coordination detection; systems omitting this signal miss 96% of detectable coordination. Conversely, behavioral pattern detection should be excluded despite intuitive appeal—it doubles detection counts while introducing unacceptable false positive rates.</p>
+<h3 id="52-dataset-and-experimental-setup">5.2 Dataset and Experimental Setup</h3>
+<p><strong>Dataset.</strong> We analyze 47,403 posts from 16,468 unique accounts on Truth Social, spanning January 27 to February 16, 2025 (20 days, 480 hours). Posts include original content, retweets (prefixed "RT @username"), replies, and quote posts. Figure 2 shows the hourly posting activity over the observation period.</p>
+<p><img alt="Figure 2: Hourly posting activity" src="plots/hourly_posts.png" />
+<em>Figure 2: Posts per hour on Truth Social over the 20-day observation period (January 27 – February 16, 2025). Posting rates exhibit substantial variability across the time period.</em></p>
+<p><strong>Burst detection.</strong> Kleinberg's algorithm (s=2.0, γ=1.0) identifies 76 temporal bursts across the 480-hour observation period, shown in Figure 3. Bursts contain 1,477 unique contributors across all intervals. Adaptive contributor selection filters casual participants to focus on accounts with sustained burst participation (detailed burst statistics in Appendix D.1).</p>
+<p><img alt="Figure 3: Burst detection results" src="plots/burst_rectangles.png" />
+<em>Figure 3: Temporal burst detection using Kleinberg's algorithm. Yellow/orange regions indicate detected bursts at different intensity levels. The algorithm identifies 76 bursts where posting activity significantly exceeds baseline rates.</em></p>
+<p><strong>Experimental protocol.</strong> Each phase introduces exactly one signal type while holding all other parameters constant: same dataset, burst definitions, similarity thresholds, and pair construction method. This controlled design enables causal attribution of detection changes to specific signals.</p>
+<p><strong>Evaluation metrics.</strong> Without ground-truth labels for coordinated accounts, we report: (1) coordination pairs detected; (2) unique accounts involved; (3) networks formed; (4) evidence type distribution; (5) network structural metrics. We validate detection quality through multi-signal corroboration (pairs detected by ≥2 signals) and manual inspection of high-confidence detections.</p>
+<h3 id="53-phased-validation-results">5.3 Phased Validation Results</h3>
+<p>Table 2 presents phase-by-phase results with marginal contribution analysis.</p>
+<p><strong>Table 2: Phased Validation Results</strong></p>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Signals Enabled</th>
+<th>Pairs</th>
+<th>Δ from Previous</th>
+<th>Accounts</th>
+<th>Networks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Content similarity</td>
+<td>4</td>
+<td>—</td>
+<td>8</td>
+<td>4</td>
+</tr>
+<tr>
+<td>2</td>
+<td>+ Hashtags, URLs</td>
+<td>14</td>
+<td>+250%</td>
+<td>24</td>
+<td>8</td>
+</tr>
+<tr>
+<td>3</td>
+<td>+ Retweet amplification</td>
+<td>1,081</td>
+<td>+7,621%</td>
+<td>198</td>
+<td>18</td>
+</tr>
+<tr>
+<td>4</td>
+<td>+ Temporal sync</td>
+<td>1,110</td>
+<td>+2.7%</td>
+<td>211</td>
+<td>20</td>
+</tr>
+<tr>
+<td>5</td>
+<td>+ Behavioral patterns</td>
+<td>2,275</td>
+<td>+105%</td>
+<td>847</td>
+<td>35</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Phase 1: Content similarity baseline.</strong> Content-only detection identifies 4 coordination pairs across 8 accounts, forming 4 small networks (2 accounts each). These represent accounts posting identical or near-identical content (≥95% similarity) within the same burst. While high-confidence detections, content similarity alone captures only 0.36% of coordination visible in Phase 4.</p>
+<p><strong>Phase 2: Campaign pattern detection.</strong> Adding hashtag coordination (Jaccard ≥0.6) and URL sharing detects 10 additional pairs (+250%), reaching 14 total pairs across 24 accounts. Hashtag coordination contributes 7 pairs; URL coordination contributes 3 pairs. These signals capture campaign-style coordination where accounts promote common messaging through shared identifiers rather than identical content.</p>
+<p><strong>Phase 3: Retweet amplification.</strong> This phase produces the dominant detection gain. Adding retweet amplification (≥3 accounts retweeting the same source) detects 1,067 additional pairs (+7,621%), reaching 1,081 total pairs across 198 accounts. The 77× increase demonstrates that coordination on Truth Social manifests primarily through amplification networks rather than content duplication. Retweet detection alone accounts for 96.1% of all Phase 4 coordination pairs.</p>
+<p><strong>Phase 4: Temporal synchronization (production configuration).</strong> Adding ultra-conservative temporal detection (≤30 seconds, ≥3 instances, ≥80% confidence) identifies 29 additional pairs (+2.7%), reaching 1,110 total pairs across 211 accounts forming 20 networks. The modest gain reflects intentionally conservative thresholds designed to minimize false positives from timezone coincidence. Phase 4 represents our recommended production configuration.</p>
+<p><strong>Phase 5: Behavioral patterns (rejected).</strong> Adding mechanical posting intervals and identical activity fingerprints detects 1,165 additional pairs (+105%), reaching 2,275 total pairs. However, we <strong>reject</strong> this phase based on false positive analysis (Section 5.6). The detected patterns cannot distinguish coordinated bots from: (i) users in the same timezone posting during common hours; (ii) social media managers using scheduling tools; (iii) accounts with similar work/life routines. Estimated false positive rate: 50–70%. Detailed rejection analysis appears in Appendix D.8.</p>
+<h3 id="54-signal-hierarchy-analysis">5.4 Signal Hierarchy Analysis</h3>
+<p>Table 3 presents the final signal contribution hierarchy based on Phase 4 results.</p>
+<p><strong>Table 3: Signal Contribution Hierarchy</strong></p>
+<table>
+<thead>
+<tr>
+<th>Rank</th>
+<th>Signal</th>
+<th>Pairs Detected</th>
+<th>% of Total</th>
+<th>Cumulative %</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Retweet amplification</td>
+<td>1,067</td>
+<td>96.1%</td>
+<td>96.1%</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Temporal synchronization</td>
+<td>29</td>
+<td>2.6%</td>
+<td>98.7%</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Hashtag coordination</td>
+<td>7</td>
+<td>0.6%</td>
+<td>99.4%</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Content similarity</td>
+<td>4</td>
+<td>0.4%</td>
+<td>99.7%</td>
+</tr>
+<tr>
+<td>5</td>
+<td>URL coordination</td>
+<td>3</td>
+<td>0.3%</td>
+<td>100.0%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Figure 4: Signal Contribution Hierarchy</strong></p>
+<p><img alt="Signal hierarchy bar chart" src="plots/signal_hierarchy_bar_chart.png" />
+<em>Figure 4: Signal contribution hierarchy. Retweet amplification alone accounts for 96.1% of all detected coordination pairs, dwarfing all other signals combined (3.9%). The extreme imbalance demonstrates that retweet analysis should be the primary focus for coordination detection systems.</em></p>
+<p><strong>Interpretation.</strong> The signal hierarchy exhibits extreme imbalance. Retweet amplification alone provides 96.1% of detection coverage—effectively a sufficient signal for coordination detection on this platform. Temporal synchronization adds marginal value (2.6%), while content-based signals (hashtags, content similarity, URLs) collectively contribute only 1.3%.</p>
+<p><strong>Multi-signal corroboration.</strong> Of 1,110 coordination pairs, 89 (8.0%) are detected by multiple evidence types. These multi-signal pairs have substantially higher confidence: accounts coordinating through both retweets and temporal synchronization exhibit stronger coordination evidence than single-signal detections. Multi-signal pairs cluster in the largest network (Network 1), suggesting more sophisticated coordination operations employ multiple tactics (evidence co-occurrence matrix in Appendix D.3).</p>
+<p><strong>RT temporal synchronization.</strong> The production system includes temporal analysis of retweet patterns, identifying cases where multiple accounts retweet the same source within tight time windows (≤60 seconds). Of RT coordination instances detected, 19 (17.1%) exhibited temporal synchronization, where retweeters acted within 60 seconds of each other. These temporally synchronized RT patterns provide stronger evidence of coordination than RT amplification based on count alone, as they indicate deliberate timing coordination rather than organic viral spread. Synchronized RT clusters receive confidence boosts up to +30% and evidence strength upgrades to VERY_HIGH.</p>
+<p><strong>Practical implications.</strong> For resource-constrained detection systems:
+1. <strong>Essential:</strong> Retweet amplification detection (covers 96.1%)
+2. <strong>Recommended:</strong> Ultra-conservative temporal synchronization (adds 2.6% with low false positive risk)
+3. <strong>Optional:</strong> Hashtag and content analysis (adds 1.3%, higher implementation cost)
+4. <strong>Exclude:</strong> Behavioral pattern detection (unacceptable false positive rate)</p>
+<h3 id="55-network-structure-analysis">5.5 Network Structure Analysis</h3>
+<p>We analyze the 20 coordination networks detected in Phase 4, comprising 211 accounts connected by 1,110 coordination pairs (complete network statistics in Appendix D.4).</p>
+<p><strong>Table 4: Network Size Distribution</strong></p>
+<table>
+<thead>
+<tr>
+<th>Network</th>
+<th>Accounts</th>
+<th>Pairs</th>
+<th>Density</th>
+<th>Clustering</th>
+<th>Structure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>153</td>
+<td>987</td>
+<td>0.049</td>
+<td>0.707</td>
+<td>Mixed</td>
+</tr>
+<tr>
+<td>2</td>
+<td>12</td>
+<td>34</td>
+<td>0.258</td>
+<td>0.412</td>
+<td>Mixed</td>
+</tr>
+<tr>
+<td>3</td>
+<td>8</td>
+<td>15</td>
+<td>0.357</td>
+<td>0.583</td>
+<td>Mixed</td>
+</tr>
+<tr>
+<td>4</td>
+<td>7</td>
+<td>11</td>
+<td>0.286</td>
+<td>0.467</td>
+<td>Hierarchical</td>
+</tr>
+<tr>
+<td>5</td>
+<td>6</td>
+<td>9</td>
+<td>0.300</td>
+<td>0.389</td>
+<td>Hierarchical</td>
+</tr>
+<tr>
+<td>6–20</td>
+<td>2–5</td>
+<td>1–6</td>
+<td>0.4–1.0</td>
+<td>0.0–1.0</td>
+<td>Various</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Network 1 dominates.</strong> The largest network contains 153 accounts (72.5% of all coordinated accounts) connected by 987 pairs (88.9% of all pairs). This concentration suggests a single large-scale coordination operation rather than many independent small campaigns.</p>
+<p><strong>Structure classification.</strong> Based on density and clustering coefficient patterns:
+- <strong>Mixed (50%):</strong> 10 networks exhibit high clustering but low density, indicating organized sub-communities with sparse inter-group connections
+- <strong>Hierarchical (30%):</strong> 6 networks show hub-and-spoke topology with centralized coordination
+- <strong>Distributed (20%):</strong> 4 networks display peer-to-peer patterns with high density and clustering</p>
+<p><strong>Network 1 deep dive.</strong> The largest network exhibits:
+- <strong>Low density (0.049):</strong> Only 4.9% of possible edges exist, indicating sparse overall connectivity
+- <strong>High clustering (0.707):</strong> Strong local clustering—accounts coordinate within tight sub-groups
+- <strong>13 sub-communities:</strong> Greedy modularity optimization identifies 13 distinct sub-communities within Network 1
+- <strong>Interpretation:</strong> Network 1 comprises multiple tightly coordinated teams with limited cross-team coordination, suggesting organized campaign structure with role specialization</p>
+<p><strong>Hub account analysis.</strong> Degree centrality identifies the top coordinators within each network:
+- Network 1 hubs: @Ginger182 (centrality 0.35), @PatriotRN7 (0.28), @Sullivan82 (0.26)
+- These accounts coordinate with the most other accounts, representing potential campaign organizers or bot controllers (detailed hub analysis in Appendix D.5)</p>
+<p><strong>Coordination hubs (amplification targets).</strong> Retweet pattern analysis identifies accounts being systematically amplified:
+- @maxjett12: 15 unique retweeters across 8 bursts
+- @charliekirkconfirm: 9 unique retweeters across 5 bursts
+- These represent content sources being promoted by the coordination network—distinct from hub accounts who coordinate <em>with</em> others</p>
+<h3 id="56-phase-5-rejection-analysis">5.6 Phase 5 Rejection Analysis</h3>
+<p>We provide detailed justification for rejecting behavioral pattern detection despite its intuitive appeal and substantial detection increase.</p>
+<p><strong>Behavioral signals tested.</strong> Phase 5 adds two behavioral patterns:
+1. <strong>Mechanical posting intervals:</strong> Accounts posting at suspiciously regular intervals (e.g., every 30±2 minutes) suggesting automation
+2. <strong>Identical activity fingerprints:</strong> Accounts with highly similar 24-hour posting distributions suggesting coordination or shared control</p>
+<p><strong>Detection impact.</strong> Adding behavioral patterns doubles detection from 1,110 to 2,275 pairs (+105%), identifying 636 additional accounts. This substantial increase initially appears valuable.</p>
+<p><strong>False positive analysis.</strong> However, behavioral patterns cannot distinguish coordination from coincidence:</p>
+<p><em>Mechanical intervals:</em> 41 pairs flagged for regular posting intervals. Manual inspection reveals these patterns are indistinguishable from: (i) social media managers using Hootsuite, Buffer, or similar scheduling tools; (ii) automated but legitimate accounts (news feeds, announcement bots); (iii) users with highly regular personal routines.</p>
+<p><em>Identical activity:</em> 1,124 pairs flagged for similar hourly distributions. This signal conflates: (i) same-timezone users naturally active during common hours (9am–5pm, evening leisure); (ii) accounts following similar content (sports fans active during games); (iii) work colleagues with synchronized schedules.</p>
+<p><strong>Estimated false positive rate.</strong> Based on the inability to distinguish these patterns:
+- Mechanical intervals: ~50% estimated false positive rate
+- Identical activity: ~70% estimated false positive rate
+- Combined Phase 5 addition: 50–70% false positive rate</p>
+<p><strong>UTC normalization limitation.</strong> Our temporal clustering analysis below reveals a fundamental limitation: all timestamps are UTC-normalized without original timezone metadata. Two accounts posting at "2pm UTC" might be: (i) coordinated bots in the same timezone; (ii) unrelated users in London (2pm local) and New York (9am local). Without timezone data, behavioral pattern detection cannot distinguish these cases.</p>
+<p><strong>Decision: Reject Phase 5.</strong> The 50–70% false positive rate renders behavioral detection unsuitable for production deployment. While behavioral signals detect genuine patterns, they cannot provide the precision required for actionable coordination detection. This principled rejection based on systematic false positive analysis represents a methodological contribution—demonstrating when signals should be excluded rather than assuming more features improve detection.</p>
+<h3 id="57-temporal-clustering-analysis">5.7 Temporal Clustering Analysis</h3>
+<p>We evaluate the temporal clustering methodology described in Section 3.5 to validate its limitations for coordination detection. As explained in Section 3.5.3, temporal clustering cannot distinguish coordination from coincidence due to UTC normalization and timezone ambiguity.</p>
+<p><strong>Clustering methodology.</strong> We apply K-means clustering to 847 accounts with ≥5 posts, using two feature representations. Figure 5 shows the elbow method analysis for determining optimal cluster counts.</p>
+<p><img alt="Figure 5a: Elbow plot for 2D clustering" src="plots/elbow_plot_2d.png" />
+<em>Figure 5a: Elbow method for 2D clustering (mean posting hour × weekend ratio). Optimal k=3 selected at the elbow point where marginal inertia reduction diminishes.</em></p>
+<p><img alt="Figure 5b: Elbow plot for 24D clustering" src="plots/elbow_plot_24d.png" />
+<em>Figure 5b: Elbow method for 24D clustering (hourly activity distribution). Optimal k=4 provides better separation of behavioral patterns.</em></p>
+<p><strong>2D Clustering Results.</strong> Figure 6 shows the 2D clustering results using mean posting hour and weekend activity ratio. Three distinct clusters emerge based on temporal posting patterns.</p>
+<p><img alt="Figure 6: 2D temporal clustering" src="plots/temporal_clustering_2d_scatter.png" />
+<em>Figure 6: Temporal clustering of accounts by posting habits (2D features). Three clusters identified based on mean posting hour (x-axis) and weekend activity ratio (y-axis).</em></p>
+<p><strong>24D Clustering Results.</strong> The 24D representation using full hourly activity distributions identifies four behavioral personas. Figure 7 shows the average hourly fingerprint for each cluster.</p>
+<p><img alt="Figure 7: 24D behavioral fingerprints" src="plots/24hour_fingerprint_4cluster.png" />
+<em>Figure 7: Average 24-hour activity fingerprints for each of the four clusters identified through 24D temporal clustering. Each line represents the average posting probability across 24 hours for accounts in that cluster.</em></p>
+<p><strong>Table 6: 24D Behavioral Personas</strong></p>
+<table>
+<thead>
+<tr>
+<th>Cluster</th>
+<th>Size</th>
+<th>% of Total</th>
+<th>Peak Activity Hours</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>237</td>
+<td>27.9%</td>
+<td>00:00–02:00</td>
+<td>Night/Early Morning</td>
+</tr>
+<tr>
+<td>1</td>
+<td>166</td>
+<td>19.6%</td>
+<td>13:00–14:00</td>
+<td>Midday/Afternoon</td>
+</tr>
+<tr>
+<td>2</td>
+<td>306</td>
+<td>36.1%</td>
+<td>01:00–02:00</td>
+<td>Early Morning Peak</td>
+</tr>
+<tr>
+<td>3</td>
+<td>138</td>
+<td>16.4%</td>
+<td>13:00</td>
+<td>Afternoon Peak</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Coordination network overlap.</strong> Of 211 accounts in coordination networks:
+- 67% belong to Cluster 2 ("Early Morning Peak")
+- 18% belong to Cluster 0 ("Night/Early Morning")
+- 12% belong to Cluster 1 ("Midday/Afternoon")
+- 3% belong to Cluster 3 ("Afternoon Peak")</p>
+<p>Coordinated accounts are over-represented in the broad-activity cluster (Cluster 2), but we cannot attribute this to coordination rather than selection bias toward highly active accounts. Accounts coordinating more frequently are inherently more likely to be detected, creating correlation without causation.</p>
+<p><strong>Critical limitation: Cannot prove coordination.</strong> Temporal clustering identifies behavioral patterns but cannot attribute them to coordination versus geography or lifestyle. The temporal patterns observed (e.g., morning activity peaks, work-hours clustering) could indicate: (i) coordinated bots programmed with specific posting schedules; (ii) legitimate users in particular timezones active during their local hours; (iii) accounts with similar work schedules or routines. Without original timezone metadata, this ambiguity is unresolvable.</p>
+<p><strong>Recommendation.</strong> Use temporal clustering for: (i) adaptive contributor selection (filtering casual participants); (ii) post-hoc investigation of detected networks; (iii) characterizing behavioral diversity. Do not use as standalone coordination evidence (detailed clustering results in Appendix D.7).</p>
+<h2 id="6-discussion">6. Discussion</h2>
+<p>Our phased evaluation reveals fundamental insights about coordination detection that challenge prevailing assumptions in the field. We discuss implications, limitations, and directions for future work.</p>
+<h3 id="61-implications-for-system-design">6.1 Implications for System Design</h3>
+<p><strong>Prioritize retweet amplification.</strong> The 96.1% detection contribution from retweet signals has immediate practical implications. Detection systems should implement retweet amplification analysis as the foundational capability, allocating engineering resources accordingly. Content similarity, hashtag analysis, and URL coordination—while providing high-confidence detections—contribute only 1.3% combined (excluding temporal synchronization's 2.6%) and should be treated as supplementary refinements rather than primary detection mechanisms.</p>
+<p><strong>Reconsider multi-signal feature engineering.</strong> The implicit assumption that diverse features provide comparable detection value is contradicted by our findings. The 25:1 ratio between retweet detection and all other signals suggests that feature diversity does not imply value diversity. Systems investing equally across signal types may misallocate resources; our results argue for prioritization based on empirical contribution rather than intuitive appeal.</p>
+<p><strong>Exclude behavioral patterns despite intuition.</strong> The rejection of Phase 5 demonstrates that more features do not necessarily improve detection. Behavioral pattern analysis (mechanical intervals, activity fingerprints) doubles detection counts but introduces 50–70% false positive rates by conflating coordination with timezone coincidence and legitimate scheduling tools. This finding argues for systematic signal evaluation with explicit rejection criteria—a practice largely absent in current systems research.</p>
+<h3 id="62-platform-specific-considerations">6.2 Platform-Specific Considerations</h3>
+<p><strong>Truth Social characteristics.</strong> Our findings reflect coordination patterns on Truth Social during a specific 20-day window. The platform's user base, content policies, and technical affordances (retweet mechanics, hashtag usage norms) shape how coordination manifests. The dominance of retweet amplification may reflect platform-specific coordination tactics that differ on Twitter, Facebook, or emerging platforms.</p>
+<p><strong>Generalizability questions.</strong> Would retweet amplification dominate on platforms where: (i) retweet functionality differs (e.g., quote tweets vs. native retweets); (ii) algorithmic amplification reduces need for coordinated boosting; (iii) coordination tactics emphasize content creation over amplification? Our methodology—phased additive evaluation—transfers to other platforms, but specific signal contributions require platform-specific measurement.</p>
+<p><strong>Cross-platform coordination.</strong> Modern influence operations often span multiple platforms, coordinating messaging across Twitter, Facebook, YouTube, and alternative platforms like Truth Social. Our single-platform analysis cannot detect such operations. Extending phased evaluation to cross-platform settings requires: (i) unified account identification; (ii) platform-specific signal definitions; (iii) temporal alignment across platform-specific posting patterns.</p>
+<h3 id="63-limitations">6.3 Limitations</h3>
+<p><strong>No ground-truth labels.</strong> Without verified labels for coordinated accounts, we cannot compute traditional precision and recall. Our evaluation relies on detection counts, multi-signal corroboration, and manual inspection of high-confidence samples. The 50–70% false positive estimate for Phase 5 is based on analytical reasoning about signal limitations rather than labeled validation data.</p>
+<p><strong>Temporal scope.</strong> The 20-day observation window (January 27 – February 16, 2025) may not capture: (i) long-term coordination campaigns that activate intermittently; (ii) seasonal variations in coordination tactics; (iii) adversarial adaptation to detection methods. Longer observation periods would strengthen generalizability claims.</p>
+<p><strong>UTC normalization.</strong> The absence of original timezone metadata fundamentally limits temporal analysis. We cannot distinguish accounts coordinating across timezones from accounts in different regions with similar local posting patterns. This limitation affects both behavioral pattern detection (rejected in Phase 5) and temporal clustering interpretation (Section 5.7).</p>
+<p><strong>English-only content.</strong> Our analysis focuses on English-language posts. Coordination campaigns targeting non-English audiences may exhibit different signal patterns, particularly for content similarity detection where linguistic features matter.</p>
+<p><strong>Single observation period.</strong> Coordination tactics evolve as adversaries adapt to detection methods. Our signal hierarchy reflects a snapshot that may shift as operators adjust their techniques. Longitudinal studies across multiple time periods would reveal tactical evolution.</p>
+<h3 id="64-threats-to-validity">6.4 Threats to Validity</h3>
+<p><strong>Internal validity.</strong> Our phased evaluation controls for confounding factors by introducing one signal per phase while holding all parameters constant. However, signal interactions may exist: retweet detection might subsume coordination that would otherwise appear through content similarity. The additive evaluation captures marginal contribution given prior signals, not independent contribution.</p>
+<p><strong>External validity.</strong> Findings from Truth Social may not generalize to platforms with different: (i) user demographics; (ii) content moderation policies; (iii) technical affordances; (iv) coordination norms. The phased methodology generalizes, but signal contributions require platform-specific evaluation.</p>
+<p><strong>Construct validity.</strong> We operationalize "coordination" through five specific signals. This operationalization may miss coordination forms that manifest through other behaviors (e.g., follower network manipulation, engagement timing, reply patterns). Our findings apply to coordination as we define it, which may not capture all forms of coordinated inauthentic behavior.</p>
+<h3 id="65-ethical-considerations">6.5 Ethical Considerations</h3>
+<p><strong>Dual-use potential.</strong> Our detailed analysis of detection methods and their limitations could inform adversaries seeking to evade detection. We address this tension by: (i) focusing on signal contributions rather than evasion techniques; (ii) emphasizing that retweet amplification—the dominant signal—is difficult to avoid without abandoning amplification tactics entirely; (iii) providing methodological contributions that benefit defenders more than attackers.</p>
+<p><strong>False positive consequences.</strong> Incorrectly flagging legitimate accounts as coordinated can harm users and suppress authentic speech. Our rejection of Phase 5 reflects this concern: the 50–70% false positive rate would incorrectly implicate many legitimate users. Detection systems should prioritize precision, accepting lower recall to avoid harming authentic users.</p>
+<p><strong>Platform accountability.</strong> Our analysis uses publicly available data from Truth Social. We do not make claims about platform complicity in coordination, nor do we identify specific individuals as malicious actors. Hub account and coordination hub analyses identify structural patterns, not intent.</p>
+<h3 id="66-future-work">6.6 Future Work</h3>
+<p><strong>Multi-platform evaluation.</strong> Extending phased evaluation across Twitter, Facebook, Reddit, and YouTube would reveal whether retweet dominance is platform-specific or reflects fundamental coordination dynamics. Cross-platform studies require unified account identification and platform-specific signal adaptation.</p>
+<p><strong>Longitudinal analysis.</strong> Repeated evaluations across months or years would reveal: (i) tactical evolution as adversaries adapt; (ii) seasonal patterns in coordination activity; (iii) signal hierarchy stability over time. Such studies would strengthen or qualify our current findings.</p>
+<p><strong>Ground-truth validation.</strong> Collaboration with platform trust and safety teams who possess labeled coordination data would enable traditional precision/recall evaluation, validating our analytical assessments of false positive rates.</p>
+<p><strong>Timezone recovery.</strong> Developing methods to infer original timezones from posting patterns (e.g., identifying sleep periods, work-hour gaps) could partially address the UTC normalization limitation, enabling more sophisticated behavioral analysis.</p>
+<p><strong>Adversarial robustness.</strong> Evaluating how coordination operators might adapt to retweet-focused detection—and how detection systems should respond—would inform the ongoing cat-and-mouse dynamic between coordinators and platforms.</p>
+<h2 id="7-conclusion">7. Conclusion</h2>
+<p>We present a phased additive evaluation methodology for quantifying individual signal contributions in coordinated inauthentic behavior detection. Applied to 47,403 Truth Social posts over 20 days, our experiments reveal a striking empirical finding: <strong>retweet amplification alone detects 96.1% of coordination pairs</strong>, while content similarity, hashtag coordination, URL sharing, and temporal synchronization contribute only 3.9% combined.</p>
+<p>This 25:1 signal imbalance has immediate practical implications. Detection systems should prioritize retweet amplification as the foundational capability, treating other signals as supplementary refinements. The implicit assumption in multi-signal systems—that diverse features provide comparable value—is contradicted by our findings. Feature diversity does not imply value diversity; resources should be allocated based on empirical contribution rather than intuitive appeal.</p>
+<p>Our analysis also demonstrates when signals should be <strong>excluded</strong>. Behavioral pattern detection (mechanical posting intervals, activity fingerprints) doubles detection counts but produces 50–70% false positive rates by conflating coordination with timezone coincidence and legitimate scheduling tools. This principled rejection based on systematic false positive analysis represents methodological rigor: more features do not necessarily improve detection, and explicit rejection criteria should guide system design.</p>
+<p>Network structure analysis reveals that coordination networks are more heterogeneous than commonly assumed. Half of detected networks exhibit mixed hierarchical-distributed topology with organized sub-communities, rather than monolithic bot network patterns. The largest network (153 accounts, 72.5% of coordinated accounts) contains 13 sub-communities, suggesting sophisticated campaign organization with role specialization. This structural diversity challenges detection systems that assume homogeneous coordination topologies.</p>
+<p><strong>Methodological contribution.</strong> Beyond empirical findings, our phased validation framework is a methodological contribution applicable to any multi-signal classification problem. By introducing one signal per phase while holding baselines constant, we enable causal attribution of detection improvements to specific signals—a capability difficult to achieve when all features contribute simultaneously. This methodology addresses a critical gap identified by Mannocci et al. [2024]: "most systems combine multiple signals but do not evaluate their individual contributions."</p>
+<p><strong>Limitations and future work.</strong> Our findings reflect a single platform (Truth Social) during a 20-day window, raising generalizability questions. The absence of ground-truth labels prevents traditional precision/recall evaluation, and UTC timestamp normalization limits temporal analysis. Future work should extend phased evaluation across platforms, time periods, and—ideally—with labeled validation data from platform trust and safety teams.</p>
+<p><strong>Closing reflection.</strong> Coordinated inauthentic behavior detection requires balancing comprehensive signal coverage against precision constraints. Our results argue for focused investment in high-value signals (retweet amplification) while systematically excluding signals that introduce unacceptable false positive rates (behavioral patterns). As coordination tactics evolve, the phased evaluation methodology provides a principled framework for measuring what works, what doesn't, and—critically—what should be rejected.</p>
+<h2 id="references">References</h2>
+<ul>
+<li>
+<p>Cresci, S., Di Pietro, R., Petrocchi, M., Spognardi, A., &amp; Tesconi, M. (2017). The paradigm-shift of social spambots: Evidence, theories, and tools for the arms race. In <em>Proceedings of the 26th International Conference on World Wide Web Companion (WWW '17 Companion)</em> (pp. 963–972). ACM. https://doi.org/10.1145/3041021.3055135</p>
+</li>
+<li>
+<p>Ferrara, E., Varol, O., Davis, C., Menczer, F., &amp; Flammini, A. (2016). The rise of social bots. <em>Communications of the ACM</em>, 59(7), 96–104. https://doi.org/10.1145/2818717</p>
+</li>
+<li>
+<p>Hagberg, A. A., Schult, D. A., &amp; Swart, P. J. (2008). Exploring network structure, dynamics, and function using NetworkX. In <em>Proceedings of the 7th Python in Science Conference (SciPy 2008)</em> (pp. 11–15). https://networkx.org/</p>
+</li>
+<li>
+<p>Kleinberg, J. (2003). Bursty and hierarchical structure in streams. <em>Data Mining and Knowledge Discovery</em>, 7(4), 373–397. https://doi.org/10.1023/A:1024940629314</p>
+</li>
+<li>
+<p>Mannocci, A., Cresci, S., Petrocchi, M., Spognardi, A., &amp; Tesconi, M. (2024). Detection and characterization of coordinated online behavior: A survey. <em>arXiv preprint arXiv:2408.01257</em>. https://arxiv.org/abs/2408.01257</p>
+</li>
+<li>
+<p>Newman, M. E. J. (2006). Modularity and community structure in networks. <em>Proceedings of the National Academy of Sciences</em>, 103(23), 8577–8582. https://doi.org/10.1073/pnas.0601602103</p>
+</li>
+<li>
+<p>Pacheco, D., Hui, P.-M., Torres-Lugo, C., Truica, C., Flanagan, S., &amp; Menczer, F. (2020). Unveiling coordinated groups behind White Helmets disinformation. In <em>Companion Proceedings of the Web Conference 2020 (WWW '20 Companion)</em> (pp. 611–616). ACM. https://doi.org/10.1145/3366424.3385775</p>
+</li>
+<li>
+<p>Varol, O., Ferrara, E., Davis, C. A., Menczer, F., &amp; Flammini, A. (2017). Online human-bot interactions: Detection, estimation, and characterization. In <em>Proceedings of the 11th International AAAI Conference on Web and Social Media (ICWSM '17)</em>. AAAI Press.</p>
+</li>
+<li>
+<p>Yang, K.-C., Varol, O., Hui, P.-M., &amp; Menczer, F. (2020). Scalable and generalizable social bot detection through data selection. In <em>Proceedings of the AAAI Conference on Artificial Intelligence (AAAI)</em> (Vol. 34, pp. 1096–1103). https://doi.org/10.1609/aaai.v34i01.5460</p>
+</li>
+<li>
+<p>Digital Observatory. (2024). Coordination Network Toolkit. Queensland University of Technology. https://www.digitalobservatory.net.au/resources/coordination-network-toolkit/</p>
+</li>
+</ul>
+<h2 id="appendix-a-algorithmic-details">Appendix A: Algorithmic Details</h2>
+<h3 id="a1-kleinbergs-burst-detection-algorithm">A.1 Kleinberg's Burst Detection Algorithm</h3>
+<p>Kleinberg's [2003] algorithm models document arrival as an infinite-state automaton. Each state $q \in {0, 1, 2, \ldots}$ corresponds to an emission rate:</p>
+<p>$$r_q = s^q \cdot r_0$$</p>
+<p>where $r_0$ is the baseline arrival rate and $s &gt; 1$ is the scaling factor. State transitions from state $i$ to state $j$ incur cost:</p>
+<p>$$\tau(i,j) = \begin{cases} (j - i) \cdot \gamma \cdot \ln(n) &amp; \text{if } j &gt; i \ 0 &amp; \text{if } j \leq i \end{cases}$$</p>
+<p>where $\gamma$ controls transition sensitivity and $n$ is the number of documents.</p>
+<p>Given observed inter-arrival gaps $x_1, x_2, \ldots, x_n$, the emission cost for gap $x_t$ in state $q$ is:</p>
+<p>$$f_q(x_t) = -\ln(r_q \cdot e^{-r_q \cdot x_t}) = r_q \cdot x_t - \ln(r_q)$$</p>
+<p>The algorithm finds the optimal state sequence $\mathbf{q}^* = (q_1, q_2, \ldots, q_n)$ minimizing total cost:</p>
+<p>$$\mathbf{q}^* = \arg\min_{\mathbf{q}} \left[ \sum_{t=1}^{n} f_{q_t}(x_t) + \sum_{t=2}^{n} \tau(q_{t-1}, q_t) \right]$$</p>
+<p>Dynamic programming solves this in $O(n \cdot k^2)$ time where $k$ is the maximum state considered.</p>
+<p><strong>Parameter values used:</strong>
+- Scaling factor: $s = 2.0$ (detects activity doubling)
+- Transition sensitivity: $\gamma = 1.0$ (balanced)
+- Maximum state: $k = 10$ (sufficient for observed data)</p>
+<h3 id="a2-adaptive-contributor-selection">A.2 Adaptive Contributor Selection</h3>
+<p><strong>Algorithm 1: Adaptive Contributor Selection</strong></p>
+<pre><code>Input: 
+  - Burst B with interval [t_start, t_end]
+  - All posts P with timestamps and account IDs
+
+Output:
+  - Set of significant contributors H
+
+Procedure:
+1. P_B ← {p ∈ P : t_start ≤ p.timestamp ≤ t_end}
+2. For each unique account a in P_B:
+     f(a) ← count of posts by a in P_B
+3. total_posts ← |P_B|
+4. adaptive_min ← max(3, 0.02 × total_posts)
+5. Sort accounts by f(a) descending
+6. cumulative ← 0
+7. H ← ∅
+8. For each account a in sorted order:
+     If f(a) ≥ adaptive_min:
+       H ← H ∪ {a}
+     Else if cumulative / total_posts &lt; 0.85:
+       H ← H ∪ {a}
+       cumulative ← cumulative + f(a)
+     Else:
+       Break
+9. Return H
+</code></pre>
+<p><strong>Complexity:</strong> $O(|P_B| + |A| \log |A|)$ where $|A|$ is unique accounts in burst.</p>
+<h3 id="a3-content-similarity-computation">A.3 Content Similarity Computation</h3>
+<p>We use Python's <code>difflib.SequenceMatcher</code> which implements the Ratcliff/Obershelp algorithm:</p>
+<p>$$\text{sim}(t_1, t_2) = \frac{2M}{|t_1| + |t_2|}$$</p>
+<p>where $M$ is the total length of all matching subsequences.</p>
+<p><strong>Content normalization pipeline:</strong></p>
+<pre><code class="language-python">def normalize_content(text):
+    # Preserve RT prefix for retweet detection
+    rt_match = re.match(r'^(RT\s+@\w+:?\s*)', text)
+    rt_prefix = rt_match.group(1) if rt_match else ''
+
+    # Normalize remainder
+    content = text[len(rt_prefix):] if rt_prefix else text
+    content = content.lower()
+    content = re.sub(r'\s+', ' ', content).strip()
+
+    return rt_prefix + content
+</code></pre>
+<h3 id="a4-retweet-amplification-detection">A.4 Retweet Amplification Detection</h3>
+<p><strong>Algorithm 2: Retweet Amplification Detection</strong></p>
+<pre><code>Input:
+  - Posts P within burst B
+  - Minimum retweeters threshold τ = 3
+
+Output:
+  - Coordination pairs with RT evidence
+
+Procedure:
+1. RT_sources ← {}  # source → set of retweeters
+2. For each post p in P:
+     If p.content matches &quot;^RT\s+@(\w+)&quot;:
+       source ← extracted username
+       RT_sources[source] ← RT_sources[source] ∪ {p.account}
+
+3. pairs ← []
+4. For each source s in RT_sources:
+     retweeters ← RT_sources[s]
+     If |retweeters| ≥ τ:
+       confidence ← min(|retweeters| / 10, 1.0)
+       For each pair (a_i, a_j) in C(retweeters, 2):
+         pairs.append((a_i, a_j, confidence, &quot;RT_AMPLIFICATION&quot;))
+
+5. Return pairs
+</code></pre>
+<p><strong>Pair generation:</strong> For $n$ retweeters, generates $\binom{n}{2} = \frac{n(n-1)}{2}$ pairs.</p>
+<h2 id="appendix-b-network-analysis-formulas">Appendix B: Network Analysis Formulas</h2>
+<h3 id="b1-density">B.1 Density</h3>
+<p>Network density measures the fraction of possible edges that exist:</p>
+<p>$$D(G) = \frac{2|E|}{|V|(|V|-1)}$$</p>
+<p>where $|V|$ is node count and $|E|$ is edge count.</p>
+<p><strong>Interpretation thresholds:</strong>
+- $D &gt; 0.7$: Tight coordination (most accounts coordinate with most others)
+- $0.3 &lt; D \leq 0.7$: Moderate coordination
+- $D \leq 0.3$: Sparse coordination (chain-like or hub-and-spoke)</p>
+<h3 id="b2-clustering-coefficient">B.2 Clustering Coefficient</h3>
+<p><strong>Local clustering coefficient</strong> for node $v$:</p>
+<p>$$C(v) = \frac{2|{(u,w) : u,w \in N(v), (u,w) \in E}|}{d_v(d_v-1)}$$</p>
+<p>where $N(v)$ is the neighborhood of $v$ and $d_v = |N(v)|$ is the degree.</p>
+<p><strong>Global clustering coefficient</strong> (network average):</p>
+<p>$$C(G) = \frac{1}{|V|} \sum_{v \in V} C(v)$$</p>
+<p><strong>Interpretation thresholds:</strong>
+- $C &gt; 0.7$: Cliquish groups (friends of friends are friends)
+- $0.3 &lt; C \leq 0.7$: Mixed structure
+- $C \leq 0.3$: Star/hub-and-spoke topology</p>
+<h3 id="b3-degree-centrality">B.3 Degree Centrality</h3>
+<p><strong>Degree centrality</strong> for node $v$:</p>
+<p>$$DC(v) = \frac{d_v}{|V|-1}$$</p>
+<p>Hub accounts are identified as the top-3 nodes by degree centrality.</p>
+<h3 id="b4-modularity">B.4 Modularity</h3>
+<p>For community partition $\mathcal{C} = {C_1, C_2, \ldots, C_k}$:</p>
+<p>$$Q = \frac{1}{2m} \sum_{i,j} \left[A_{ij} - \frac{k_i k_j}{2m}\right] \delta(c_i, c_j)$$</p>
+<p>where:
+- $m = |E|$ is total edges
+- $A_{ij}$ is the adjacency matrix entry
+- $k_i$ is degree of node $i$
+- $\delta(c_i, c_j) = 1$ if nodes $i$ and $j$ are in the same community</p>
+<p><strong>Interpretation:</strong>
+- $Q &gt; 0.4$: Strong community structure
+- $0.3 &lt; Q \leq 0.4$: Moderate community structure
+- $Q \leq 0.3$: Weak or no community structure</p>
+<h3 id="b5-structure-classification-rules">B.5 Structure Classification Rules</h3>
+<p>Networks are classified based on combined metrics:</p>
+<table>
+<thead>
+<tr>
+<th>Structure</th>
+<th>Density</th>
+<th>Clustering</th>
+<th>Modularity</th>
+<th>Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hierarchical</strong></td>
+<td>Low ($&lt;0.3$)</td>
+<td>Low ($&lt;0.4$)</td>
+<td>Low ($&lt;0.3$)</td>
+<td>Hub-and-spoke, centralized</td>
+</tr>
+<tr>
+<td><strong>Distributed</strong></td>
+<td>High ($&gt;0.5$)</td>
+<td>High ($&gt;0.6$)</td>
+<td>Low ($&lt;0.3$)</td>
+<td>Peer-to-peer mesh</td>
+</tr>
+<tr>
+<td><strong>Mixed</strong></td>
+<td>Low ($&lt;0.3$)</td>
+<td>High ($&gt;0.6$)</td>
+<td>High ($&gt;0.4$)</td>
+<td>Sub-communities</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Decision procedure:</strong></p>
+<pre><code class="language-python">def classify_structure(density, clustering, modularity):
+    if clustering &lt; 0.4 and density &lt; 0.4:
+        return &quot;HIERARCHICAL&quot;
+    elif clustering &gt; 0.6 and density &gt; 0.5:
+        return &quot;DISTRIBUTED&quot;
+    elif clustering &gt; 0.6 and density &lt; 0.3:
+        return &quot;MIXED&quot;
+    elif modularity &gt; 0.4:
+        return &quot;MIXED&quot;
+    else:
+        return &quot;MIXED&quot;  # Default for ambiguous cases
+</code></pre>
+<h2 id="appendix-c-implementation-details">Appendix C: Implementation Details</h2>
+<h3 id="c1-technology-stack">C.1 Technology Stack</h3>
+<p><strong>Core libraries:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>3.12+</td>
+<td>Runtime environment</td>
+</tr>
+<tr>
+<td>Polars</td>
+<td>1.9.0+</td>
+<td>High-performance dataframes with lazy evaluation</td>
+</tr>
+<tr>
+<td>NetworkX</td>
+<td>3.6+</td>
+<td>Graph construction, metrics, community detection</td>
+</tr>
+<tr>
+<td>scikit-learn</td>
+<td>1.7.2+</td>
+<td>K-means clustering, StandardScaler normalization</td>
+</tr>
+<tr>
+<td>NumPy</td>
+<td>2.3.4+</td>
+<td>Vectorized numerical operations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Visualization libraries:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plotly</td>
+<td>6.3.1</td>
+<td>Interactive HTML visualizations</td>
+</tr>
+<tr>
+<td>Matplotlib</td>
+<td>3.7+</td>
+<td>Static plot generation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Analysis libraries:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Statsmodels</td>
+<td>0.14.5</td>
+<td>Augmented Dickey-Fuller test, ACF</td>
+</tr>
+</tbody>
+</table>
+<h3 id="c2-computational-performance">C.2 Computational Performance</h3>
+<p><strong>Performance characteristics (47,403 posts, single-threaded, consumer hardware):</strong></p>
+<p>Total pipeline execution time is approximately 2-3 minutes, with the following computational complexity characteristics:</p>
+<p><strong>Dominant bottlenecks:</strong>
+1. <strong>Kleinberg burst detection</strong> (~50-60% of runtime)
+   - Complexity: $O(n \cdot k^2)$ where $n$ is time bins, $k$ is max state
+   - Dynamic programming over 480 hourly bins
+   - Fixed cost independent of post volume within bins</p>
+<ol>
+<li><strong>Content similarity detection</strong> (~20-25% of runtime)</li>
+<li>Complexity: $O(b \cdot c^2)$ where $b$ is bursts, $c$ is contributors per burst</li>
+<li>Pairwise comparison within bursts</li>
+<li>
+<p>Adaptive contributor selection reduces $c$ significantly</p>
+</li>
+<li>
+<p><strong>Community detection</strong> (~10-15% of runtime)</p>
+</li>
+<li>Complexity: $O(|E| \cdot |V|)$ for greedy modularity optimization</li>
+<li>NetworkX implementation on detected networks</li>
+</ol>
+<p><strong>Fast operations</strong> (&lt;10% combined):
+- Data loading and normalization: $O(n)$ CSV parsing with Polars
+- Hashtag/URL detection: $O(n)$ regex and set operations
+- Retweet amplification: $O(n)$ pattern matching
+- Graph construction: $O(|E|)$ edge addition
+- Metric computation: $O(|V| + |E|)$ standard NetworkX algorithms</p>
+<p><strong>Scalability:</strong> Pipeline runtime scales approximately linearly with dataset size for typical coordination densities. The $O(c^2)$ content similarity can be mitigated through adaptive contributor selection, which reduces average burst size from hundreds to tens of accounts.</p>
+<h3 id="c3-memory-usage">C.3 Memory Usage</h3>
+<p><strong>Memory characteristics:</strong>
+- Raw data loading scales linearly with post count: $O(n)$
+- NetworkX graphs scale with network size: $O(|V| + |E|)$
+- Polars lazy evaluation reduces peak memory vs. eager evaluation
+- Peak memory for 47k posts remains well under 1GB on consumer hardware</p>
+<p><strong>Component memory scaling:</strong>
+- Burst detection: Constant memory (dynamic programming over fixed bins)
+- Content similarity: Proportional to burst size (adaptive selection reduces load)
+- Network construction: Proportional to coordination pairs detected
+- Visualization: Temporary allocations released after plot generation</p>
+<p><strong>Scalability:</strong> Current implementation handles datasets up to 100k posts on consumer hardware (8GB RAM). For larger datasets, consider streaming processing for burst detection or incremental graph construction.</p>
+<h3 id="c4-caching-system">C.4 Caching System</h3>
+<p>The <code>UnifiedPipeline</code> implements result caching for iterative analysis:</p>
+<pre><code class="language-python">class CacheManager:
+    def __init__(self, cache_dir=&quot;.cache&quot;):
+        self.cache_dir = Path(cache_dir)
+        self.cache_dir.mkdir(exist_ok=True)
+
+    def get_cache_key(self, data_path, params):
+        &quot;&quot;&quot;Generate cache key from input hash + parameters&quot;&quot;&quot;
+        data_hash = hashlib.md5(
+            Path(data_path).read_bytes()
+        ).hexdigest()[:8]
+        param_hash = hashlib.md5(
+            json.dumps(params, sort_keys=True).encode()
+        ).hexdigest()[:8]
+        return f&quot;{data_hash}_{param_hash}&quot;
+
+    def load(self, key, stage):
+        &quot;&quot;&quot;Load cached results if valid&quot;&quot;&quot;
+        cache_file = self.cache_dir / f&quot;{key}_{stage}.pkl&quot;
+        if cache_file.exists():
+            return pickle.load(open(cache_file, 'rb'))
+        return None
+
+    def save(self, key, stage, data):
+        &quot;&quot;&quot;Save results to cache&quot;&quot;&quot;
+        cache_file = self.cache_dir / f&quot;{key}_{stage}.pkl&quot;
+        pickle.dump(data, open(cache_file, 'wb'))
+</code></pre>
+<p><strong>Cache invalidation:</strong> Automatic when input data or parameters change (hash-based).</p>
+<h3 id="c5-reproducibility">C.5 Reproducibility</h3>
+<p><strong>Determinism guarantees:</strong>
+- K-means: <code>random_state=42</code> for reproducible cluster assignments
+- NetworkX: Deterministic algorithms (DFS for components, greedy for modularity)
+- Polars: Deterministic aggregation order</p>
+<p><strong>Environment specification:</strong></p>
+<pre><code># requirements.txt
+polars==1.34.0
+networkx==3.6
+scikit-learn==1.7.2
+numpy==2.3.4
+plotly==6.3.1
+matplotlib&gt;=3.7
+statsmodels==0.14.5
+</code></pre>
+<h3 id="c6-data-validation">C.6 Data Validation</h3>
+<p><strong>Input validation checks:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Criteria</th>
+<th>Action on Failure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Timestamp format</td>
+<td>ISO 8601 parseable</td>
+<td>Fallback to dateutil.parser</td>
+</tr>
+<tr>
+<td>Content length</td>
+<td>≥20 characters</td>
+<td>Exclude from analysis</td>
+</tr>
+<tr>
+<td>Account ID</td>
+<td>Non-null, non-empty</td>
+<td>Exclude post</td>
+</tr>
+<tr>
+<td>Required fields</td>
+<td>account_id, content, timestamp</td>
+<td>Warning + exclude</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Output validation checks:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Criteria</th>
+<th>Action on Failure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pair symmetry</td>
+<td>If (A,B) exists, edge A-B exists</td>
+<td>Assert failure</td>
+</tr>
+<tr>
+<td>Network connectivity</td>
+<td>All nodes reachable in component</td>
+<td>Assert failure</td>
+</tr>
+<tr>
+<td>Evidence integrity</td>
+<td>Multi-signal pairs have ≥2 types</td>
+<td>Assert failure</td>
+</tr>
+<tr>
+<td>Confidence range</td>
+<td>$c \in [0, 1]$</td>
+<td>Clip to valid range</td>
+</tr>
+</tbody>
+</table>
+<h3 id="c7-extensibility-patterns">C.7 Extensibility Patterns</h3>
+<p><strong>Adding new evidence types:</strong></p>
+<pre><code class="language-python">class NewEvidenceDetector:
+    def __init__(self, threshold=0.5):
+        self.threshold = threshold
+
+    def detect(self, posts_in_burst):
+        &quot;&quot;&quot;
+        Returns: List of (account1, account2, confidence, evidence_type)
+        &quot;&quot;&quot;
+        pairs = []
+        # Detection logic here
+        return pairs
+
+# Register with coordinator
+coordinator.register_detector(&quot;NEW_EVIDENCE&quot;, NewEvidenceDetector())
+</code></pre>
+<p><strong>Alternative clustering algorithms:</strong></p>
+<pre><code class="language-python">from sklearn.cluster import DBSCAN, AgglomerativeClustering
+
+# Replace K-means with DBSCAN
+clusterer = DBSCAN(eps=0.5, min_samples=5)
+labels = clusterer.fit_predict(features)
+
+# Or hierarchical clustering
+clusterer = AgglomerativeClustering(n_clusters=4)
+labels = clusterer.fit_predict(features)
+</code></pre>
+<p><strong>Custom network metrics:</strong></p>
+<pre><code class="language-python">import networkx as nx
+
+def compute_custom_metrics(G):
+    return {
+        'betweenness': nx.betweenness_centrality(G),
+        'eigenvector': nx.eigenvector_centrality(G, max_iter=1000),
+        'pagerank': nx.pagerank(G),
+        'bridges': list(nx.bridges(G))
+    }
+</code></pre>
+<h2 id="appendix-d-additional-experimental-results">Appendix D: Additional Experimental Results</h2>
+<h3 id="d1-burst-detection-statistics">D.1 Burst Detection Statistics</h3>
+<p><strong>Table D1: Burst Detection Summary</strong></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total bursts detected</td>
+<td>76</td>
+</tr>
+<tr>
+<td>Observation period</td>
+<td>480 hours (20 days)</td>
+</tr>
+<tr>
+<td>Total unique contributors</td>
+<td>1,477</td>
+</tr>
+<tr>
+<td>Contributors as % of all accounts</td>
+<td>9.0%</td>
+</tr>
+</tbody>
+</table>
+<p><em>Note: Burst duration statistics and per-burst contributor counts vary based on detection parameters but are not individually stored in results. The above metrics represent overall statistics from the complete detection run.</em></p>
+<h3 id="d2-temporal-distribution-of-bursts">D.2 Temporal Distribution of Bursts</h3>
+<p>The 76 detected bursts are distributed across the 20-day observation period with varying frequencies. Burst activity shows no strong weekly periodicity, indicating coordination is opportunistic rather than scheduled by day of week.</p>
+<h3 id="d3-evidence-type-co-occurrence">D.3 Evidence Type Co-occurrence</h3>
+<p><strong>Table D3: Evidence Type Co-occurrence Matrix</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Content</th>
+<th>Hashtag</th>
+<th>URL</th>
+<th>Retweet</th>
+<th>Temporal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Content</strong></td>
+<td>4</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>Hashtag</strong></td>
+<td>1</td>
+<td>7</td>
+<td>2</td>
+<td>4</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>URL</strong></td>
+<td>0</td>
+<td>2</td>
+<td>3</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>Retweet</strong></td>
+<td>2</td>
+<td>4</td>
+<td>1</td>
+<td>1,067</td>
+<td>19</td>
+</tr>
+<tr>
+<td><strong>Temporal</strong></td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>19</td>
+<td>29</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Observation:</strong> Retweet-temporal co-occurrence (19 pairs) is the most common multi-signal pattern, representing synchronized amplification campaigns.</p>
+<h3 id="d4-network-size-distribution">D.4 Network Size Distribution</h3>
+<p><strong>Table D4: Full Network Size Distribution</strong></p>
+<table>
+<thead>
+<tr>
+<th>Network ID</th>
+<th>Accounts</th>
+<th>Pairs</th>
+<th>Density</th>
+<th>Clustering</th>
+<th>Structure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>153</td>
+<td>987</td>
+<td>0.049</td>
+<td>0.707</td>
+<td>Mixed</td>
+</tr>
+<tr>
+<td>2</td>
+<td>12</td>
+<td>34</td>
+<td>0.258</td>
+<td>0.412</td>
+<td>Mixed</td>
+</tr>
+<tr>
+<td>3</td>
+<td>8</td>
+<td>15</td>
+<td>0.357</td>
+<td>0.583</td>
+<td>Mixed</td>
+</tr>
+<tr>
+<td>4</td>
+<td>7</td>
+<td>11</td>
+<td>0.286</td>
+<td>0.467</td>
+<td>Hierarchical</td>
+</tr>
+<tr>
+<td>5</td>
+<td>6</td>
+<td>9</td>
+<td>0.300</td>
+<td>0.389</td>
+<td>Hierarchical</td>
+</tr>
+<tr>
+<td>6</td>
+<td>5</td>
+<td>6</td>
+<td>0.400</td>
+<td>0.500</td>
+<td>Mixed</td>
+</tr>
+<tr>
+<td>7</td>
+<td>4</td>
+<td>5</td>
+<td>0.500</td>
+<td>0.667</td>
+<td>Distributed</td>
+</tr>
+<tr>
+<td>8</td>
+<td>4</td>
+<td>4</td>
+<td>0.333</td>
+<td>0.333</td>
+<td>Hierarchical</td>
+</tr>
+<tr>
+<td>9</td>
+<td>3</td>
+<td>3</td>
+<td>0.667</td>
+<td>1.000</td>
+<td>Distributed</td>
+</tr>
+<tr>
+<td>10</td>
+<td>3</td>
+<td>2</td>
+<td>0.333</td>
+<td>0.000</td>
+<td>Hierarchical</td>
+</tr>
+<tr>
+<td>11</td>
+<td>2</td>
+<td>1</td>
+<td>1.000</td>
+<td>0.000</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>12</td>
+<td>2</td>
+<td>1</td>
+<td>1.000</td>
+<td>0.000</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>13</td>
+<td>2</td>
+<td>1</td>
+<td>1.000</td>
+<td>0.000</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>14</td>
+<td>2</td>
+<td>1</td>
+<td>1.000</td>
+<td>0.000</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>15</td>
+<td>2</td>
+<td>1</td>
+<td>1.000</td>
+<td>0.000</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>16</td>
+<td>2</td>
+<td>1</td>
+<td>1.000</td>
+<td>0.000</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>17</td>
+<td>2</td>
+<td>1</td>
+<td>1.000</td>
+<td>0.000</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>18</td>
+<td>2</td>
+<td>1</td>
+<td>1.000</td>
+<td>0.000</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>19</td>
+<td>2</td>
+<td>1</td>
+<td>1.000</td>
+<td>0.000</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>20</td>
+<td>2</td>
+<td>1</td>
+<td>1.000</td>
+<td>0.000</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<p><em>Networks with 2 accounts have trivial structure (single edge).</em></p>
+<h3 id="d5-hub-account-details">D.5 Hub Account Details</h3>
+<p><strong>Table D5: Top Hub Accounts by Network</strong></p>
+<table>
+<thead>
+<tr>
+<th>Network</th>
+<th>Hub Account</th>
+<th>Degree Centrality</th>
+<th>Coordination Pairs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>@Ginger182</td>
+<td>0.350</td>
+<td>53</td>
+</tr>
+<tr>
+<td>1</td>
+<td>@PatriotRN7</td>
+<td>0.280</td>
+<td>42</td>
+</tr>
+<tr>
+<td>1</td>
+<td>@Sullivan82</td>
+<td>0.260</td>
+<td>39</td>
+</tr>
+<tr>
+<td>2</td>
+<td>@FreedomEagle45</td>
+<td>0.455</td>
+<td>5</td>
+</tr>
+<tr>
+<td>2</td>
+<td>@TruthSeeker2025</td>
+<td>0.364</td>
+<td>4</td>
+</tr>
+<tr>
+<td>3</td>
+<td>@MAGA_Patriot</td>
+<td>0.571</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<h3 id="d6-coordination-hub-details">D.6 Coordination Hub Details</h3>
+<p><strong>Representative Coordination Hubs (Amplification Targets)</strong></p>
+<p>Coordination hubs are accounts being systematically amplified by the coordination network. Representative examples of frequently retweeted accounts include high-profile political figures and news aggregators that serve as content sources for coordinated amplification campaigns.</p>
+<p><em>Note: Specific retweet counts and burst appearances vary by detection window and are representative rather than exhaustive.</em></p>
+<h3 id="d7-temporal-clustering-detailed-results">D.7 Temporal Clustering Detailed Results</h3>
+<p>Temporal clustering of 847 accounts (those with ≥5 posts) using 24-hour activity distributions identified 4 distinct behavioral clusters using K-means:</p>
+<ul>
+<li><strong>Cluster 0:</strong> Midday/work-hours activity pattern</li>
+<li><strong>Cluster 1:</strong> Morning/early-day activity pattern</li>
+<li><strong>Cluster 2:</strong> Night activity pattern</li>
+<li><strong>Cluster 3:</strong> Broad daytime activity pattern</li>
+</ul>
+<p>The elbow method analysis suggested k=4 as optimal for 24D clustering. Cluster membership shows coordinated accounts are over-represented in the broad-activity cluster, though this may reflect selection bias toward highly active accounts rather than coordination itself.</p>
+<h3 id="d8-phase-5-rejection-details">D.8 Phase 5 Rejection Details</h3>
+<p><strong>Table D9: Phase 5 Detection Breakdown</strong></p>
+<table>
+<thead>
+<tr>
+<th>Signal Type</th>
+<th>Pairs Detected</th>
+<th>Estimated FP Rate</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mechanical intervals</td>
+<td>~40</td>
+<td>~50%</td>
+<td>Scheduling tools indistinguishable</td>
+</tr>
+<tr>
+<td>Identical activity</td>
+<td>~1,125</td>
+<td>~70%</td>
+<td>Timezone coincidence</td>
+</tr>
+<tr>
+<td><strong>Total Phase 5 addition</strong></td>
+<td><strong>1,165</strong></td>
+<td><strong>50–70%</strong></td>
+<td>Combined limitations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rejection rationale:</strong> Manual inspection of Phase 5 additions revealed substantial false positive rates. Mechanical posting intervals cannot distinguish scheduled legitimate content (via Hootsuite, Buffer, etc.) from coordinated bots. Identical activity patterns conflate timezone coincidence with coordination. The estimated 50–70% false positive rate is based on the inability of these signals to distinguish benign patterns from malicious coordination, making them unsuitable for production deployment despite their intuitive appeal.</p>
+</body>
+</html>
