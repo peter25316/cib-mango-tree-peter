@@ -1,3 +1,13 @@
+## Abstract
+
+Coordinated inauthentic behavior (CIB) on social media is typically detected using multi-signal systems that combine content similarity, hashtag coordination, URL sharing, retweet amplification, and behavioral patterns. Although widely adopted, no prior work has systematically quantified the marginal contribution of each signal under controlled conditions.
+
+We introduce a phased additive evaluation framework that isolates the detection value of individual coordination signals while holding all other variables constant. Applied to 47,403 Truth Social posts spanning 20 days in early 2025, our experiments reveal a dramatic imbalance: retweet amplification alone accounts for 96.1% of all detected coordination pairs (1,067 of 1,110), while content similarity (0.4%), hashtag coordination (0.6%), URL sharing (0.3%), and ultra-conservative temporal synchronization (2.6%) contribute only 3.9% combined. Adding widely used behavioral patterns (mechanical posting intervals and activity fingerprints) more than doubles detections but introduces an estimated 50–70% false positive rate, leading to their principled rejection.
+
+Network analysis of the resulting 20 coordination networks shows that half exhibit mixed hierarchical-distributed topologies with organized sub-communities, challenging assumptions of homogeneous bot structures. Our findings imply that detection systems should treat retweet amplification as non-negotiable and deprioritize or exclude low-value or high-noise signals. The phased evaluation methodology is general and directly applicable to any multi-signal detection or classification task.
+
+Keywords: coordinated inauthentic behavior, retweet amplification, signal evaluation, social media manipulation, Truth Social
+
 ## 1. Introduction
 
 Social media platforms have become primary channels for public discourse, political mobilization, and information dissemination. However, this democratization of communication has been accompanied by systematic manipulation through coordinated inauthentic behavior (CIB)—organized campaigns employing networks of accounts to artificially amplify narratives, suppress dissent, or create false consensus. Recent surveys highlight the pervasiveness of such coordination across platforms, spanning both legitimate social movements and disinformation campaigns [Mannocci et al., 2024]. The scale and sophistication of coordinated operations pose fundamental challenges to platform integrity and democratic processes.
