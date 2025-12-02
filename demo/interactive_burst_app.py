@@ -94,7 +94,7 @@ def check_data_stationarity(data_series):
     except Exception as e:
         return False, f"Error in stationarity test: {e}"
 
-def calculate_acf(data_series, max_lags=50):
+def calculate_acf(data_series, max_lags=168):  # 7 days * 24 hours to show weekly patterns
     """Calculate Autocorrelation Function"""
     try:
         clean_series = data_series.dropna()
@@ -648,22 +648,49 @@ def main():
     with col1:
         if is_stationary:
             st.success("✅ Data is stationary (suitable for burst detection)")
-            st.write(f"**ADF p-value:** {stat_results['p_value']:.6f}")
+            # Format p-value: use scientific notation if very small
+            p_val = stat_results['p_value']
+            if p_val < 0.0001:
+                st.write(f"**ADF p-value:** {p_val:.2e} (< 0.0001)")
+            else:
+                st.write(f"**ADF p-value:** {p_val:.6f}")
+            st.caption("p < 0.05 means stationary (rejects unit root hypothesis)")
         else:
             st.warning("⚠️ Data may not be stationary")
-            st.write(f"**ADF p-value:** {stat_results['p_value']:.6f}")
+            p_val = stat_results['p_value']
+            st.write(f"**ADF p-value:** {p_val:.6f}")
             st.info("Burst detection may still work but results should be interpreted carefully")
+            st.caption("p ≥ 0.05 suggests possible non-stationarity")
 
     with col2:
         # Calculate and show ACF
         acf_vals, lags = calculate_acf(posts_per_hour_df['post_count'])
         if acf_vals is not None:
             fig_acf = go.Figure()
-            fig_acf.add_trace(go.Scatter(x=lags, y=acf_vals, mode='lines+markers', name='ACF'))
-            fig_acf.add_hline(y=0, line_dash="dash", line_color="gray")
-            fig_acf.add_hline(y=0.05, line_dash="dash", line_color="red", annotation_text="5% threshold")
-            fig_acf.add_hline(y=-0.05, line_dash="dash", line_color="red")
-            fig_acf.update_layout(title="Autocorrelation Function", xaxis_title="Lag (hours)", yaxis_title="ACF", height=300)
+            fig_acf.add_trace(go.Scatter(
+                x=lags,
+                y=acf_vals,
+                mode='lines+markers',
+                name='ACF',
+                line=dict(color='blue'),
+                marker=dict(size=4)
+            ))
+            fig_acf.add_hline(y=0, line_dash="solid", line_color="gray", line_width=1)
+
+            # Calculate confidence interval (approximately ±1.96/sqrt(n))
+            n = len(posts_per_hour_df['post_count'])
+            confidence_interval = 1.96 / np.sqrt(n)
+            fig_acf.add_hline(y=confidence_interval, line_dash="dash", line_color="red",
+                             annotation_text="95% threshold", annotation_position="right")
+            fig_acf.add_hline(y=-confidence_interval, line_dash="dash", line_color="red")
+
+            fig_acf.update_layout(
+                title="Autocorrelation Function (ACF) of Posts Per Hour",
+                xaxis_title="Lag (Hours)",
+                yaxis_title="Autocorrelation",
+                height=350,
+                showlegend=False
+            )
             st.plotly_chart(fig_acf, use_container_width=True)
 
     # Step 3: Burst Detection
