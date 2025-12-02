@@ -638,6 +638,539 @@ These are WHAT is being amplified by the network.
 
 ---
 
+## Network Structure Types
+
+### **Overview**
+Network structure type describes the **overall topology** of how coordination is organized - whether it's centralized around leaders, distributed among peers, or a mix of both.
+
+### **The Three Structure Types**
+
+#### **1. Hierarchical (Centralized / Hub-and-Spoke)**
+
+**Definition:**
+- Network organized around **one or few central hubs**
+- Most accounts connect through the hub(s)
+- Star-like topology
+
+**Visual:**
+```
+Hierarchical Structure:
+
+         LEADER
+        /  |  |  \
+       /   |  |   \
+      A    B  C    D
+     /|    |  |    |\
+    E F    G  H    I J
+
+- One central hub (LEADER)
+- Followers connect to hub
+- Followers DON'T connect to each other much
+```
+
+**Characteristics:**
+- **Low clustering coefficient** (0.1-0.3) - Few triangles, mostly star pattern
+- **High centralization** - One or few accounts dominate connections
+- **Low density** (0.05-0.2) - Not everyone connects to everyone
+- **Clear hub account(s)** - High degree centrality concentration
+
+**Indicators:**
+- Top hub account has degree centrality **>2x** the second hub
+- Removing top hub would **fragment network** significantly
+- **Betweenness centrality** concentrated in hub(s)
+
+**Real-World Examples:**
+- **Influencer amplification network:** Celebrity with many followers retweeting
+- **Bot master controller:** Single operator controlling many bot accounts
+- **Campaign with clear leader:** One person organizing, others following
+
+**Suspicion Assessment:**
+- **If organic influencer:** Low suspicion (natural pattern)
+- **If bot network:** High suspicion (centralized control)
+- **Depends on context and other signals**
+
+---
+
+#### **2. Distributed (Peer-to-Peer / Fully Connected)**
+
+**Definition:**
+- Network organized as **peer-to-peer** coordination
+- Most accounts coordinate with most other accounts
+- Mesh-like topology
+
+**Visual:**
+```
+Distributed Structure:
+
+A --- B --- C --- D
+|  X  |  X  |  X  |
+E --- F --- G --- H
+|  X  |  X  |  X  |
+I --- J --- K --- L
+
+- Everyone coordinates with almost everyone
+- No single central hub
+- Many cross-connections
+```
+
+**Characteristics:**
+- **High clustering coefficient** (0.7-1.0) - Many triangles and cliques
+- **High density** (0.6-1.0) - Most possible connections exist
+- **Low centralization** - Connections evenly distributed
+- **Multiple hub accounts** with similar centrality scores
+
+**Indicators:**
+- Top 5 hub accounts have similar degree centrality (within 20%)
+- Many **triangles** (A-B-C all coordinate)
+- Removing any single account has minimal impact
+
+**Real-World Examples:**
+- **Bot peer network:** Bots programmed to coordinate with each other
+- **Tight activist group:** Small coordinated team where everyone knows everyone
+- **Echo chamber:** Tight community amplifying each other
+
+**Suspicion Assessment:**
+- **Very high suspicion** - Suggests organized, automated coordination
+- Unnatural pattern for organic groups (humans don't all coordinate equally)
+- Typical of **bot networks** or **coordinated inauthentic behavior**
+
+---
+
+#### **3. Mixed (Hybrid / Clustered)**
+
+**Definition:**
+- Network has **both hierarchical and distributed** elements
+- Contains **sub-communities** with different internal structures
+- Most common in real-world networks
+
+**Visual:**
+```
+Mixed Structure:
+
+Sub-Community 1:        Bridge        Sub-Community 2:
+    LEADER1                               LEADER2
+   /   |   \                             /   |   \
+  A    B    C --------<connection>------ D    E    F
+ /|\  /|\  /|\                          /|\  /|\  /|\
+G H I J K L M                          N O P Q R S T
+
+Sub-Community 3:
+U --- V --- W
+|  X  |  X  |
+X --- Y --- Z
+
+- Multiple sub-communities
+- Some hierarchical (Leader1, Leader2)
+- Some distributed (Sub-Community 3)
+- Bridges between communities
+```
+
+**Characteristics:**
+- **Medium clustering coefficient** (0.4-0.7) - Some cliques, some stars
+- **Low to medium density** (0.1-0.5) - Depends on community connectivity
+- **Variable centralization** - Different patterns in different parts
+- **Clear sub-communities** - Modularity >0.4
+
+**Indicators:**
+- **Modularity** >0.4 (strong community structure)
+- Different **density within** vs **between** communities
+- Some hub accounts **within communities**, some **bridging communities**
+- **Betweenness centrality** identifies bridge accounts
+
+**Real-World Examples:**
+- **Multi-team campaign:** Different messaging teams, each with leaders
+- **Geographic clusters:** Local organizers coordinating regional groups
+- **Specialized roles:** Content creators + amplifiers + engagement bots
+- **Evolving network:** Organic groups that become more organized
+
+**Suspicion Assessment:**
+- **Medium to high suspicion** - Organized coordination with structure
+- More sophisticated than simple bot network
+- Could be legitimate organized activism OR coordinated campaign
+- **Investigate further** - Look at sub-community behaviors
+
+---
+
+### **How to Determine Structure Type**
+
+#### **Method 1: Clustering + Density Analysis (Simple)**
+
+```python
+def determine_structure_simple(G):
+    """Simple structure type determination"""
+    density = nx.density(G)
+    clustering = nx.average_clustering(G)
+    
+    # Hierarchical: Low clustering, low-medium density
+    if clustering < 0.4 and density < 0.4:
+        return "HIERARCHICAL"
+    
+    # Distributed: High clustering, high density
+    elif clustering >= 0.6 and density >= 0.5:
+        return "DISTRIBUTED"
+    
+    # Mixed: Everything else
+    else:
+        return "MIXED"
+```
+
+**Decision Matrix:**
+
+| Clustering | Density | Structure Type |
+|------------|---------|----------------|
+| Low (0-0.4) | Low (0-0.3) | **HIERARCHICAL** (Star pattern) |
+| Low (0-0.4) | High (0.6-1.0) | **HIERARCHICAL** (Few hubs, many spokes) |
+| High (0.6-1.0) | High (0.6-1.0) | **DISTRIBUTED** (Mesh pattern) |
+| Medium (0.4-0.6) | Low-Medium (0.1-0.5) | **MIXED** (Sub-communities) |
+| High (0.6-1.0) | Low (0-0.3) | **MIXED** (Tight groups, loose links) |
+
+---
+
+#### **Method 2: Hub Concentration Analysis (Better)**
+
+```python
+def determine_structure_advanced(G):
+    """Advanced structure type with hub analysis"""
+    density = nx.density(G)
+    clustering = nx.average_clustering(G)
+    
+    # Calculate degree centrality
+    degree_cent = nx.degree_centrality(G)
+    sorted_cent = sorted(degree_cent.values(), reverse=True)
+    
+    if len(sorted_cent) < 2:
+        return "INSUFFICIENT_DATA"
+    
+    # Hub concentration ratio
+    top_hub = sorted_cent[0]
+    second_hub = sorted_cent[1]
+    hub_ratio = top_hub / second_hub if second_hub > 0 else float('inf')
+    
+    # Average degree centrality
+    avg_centrality = sum(sorted_cent) / len(sorted_cent)
+    
+    # Decision logic
+    # HIERARCHICAL: One dominant hub
+    if hub_ratio > 2.0 and clustering < 0.5:
+        return "HIERARCHICAL"
+    
+    # DISTRIBUTED: Even distribution, high connectivity
+    elif hub_ratio < 1.3 and clustering > 0.6 and density > 0.5:
+        return "DISTRIBUTED"
+    
+    # MIXED: Everything else (default for complex networks)
+    else:
+        return "MIXED"
+```
+
+**Hub Concentration Indicators:**
+
+| Hub Ratio (Top/Second) | Interpretation |
+|------------------------|----------------|
+| **>3.0** | Very hierarchical - one dominant leader |
+| **2.0-3.0** | Hierarchical - clear leader |
+| **1.5-2.0** | Moderately hierarchical - some leaders |
+| **1.0-1.5** | Distributed - similar influence |
+
+---
+
+#### **Method 3: Modularity + Sub-Communities (Most Accurate)**
+
+```python
+def determine_structure_comprehensive(G):
+    """Most comprehensive structure analysis"""
+    density = nx.density(G)
+    clustering = nx.average_clustering(G)
+    
+    # Detect sub-communities
+    communities = list(nx.community.greedy_modularity_communities(G))
+    modularity = nx.community.modularity(G, communities)
+    num_communities = len(communities)
+    
+    # Degree centrality analysis
+    degree_cent = nx.degree_centrality(G)
+    sorted_cent = sorted(degree_cent.values(), reverse=True)
+    top_hub = sorted_cent[0] if sorted_cent else 0
+    hub_ratio = sorted_cent[0] / sorted_cent[1] if len(sorted_cent) > 1 and sorted_cent[1] > 0 else float('inf')
+    
+    # Decision logic
+    # HIERARCHICAL: Centralized, low modularity
+    if hub_ratio > 2.0 and modularity < 0.3 and clustering < 0.5:
+        return {
+            'type': 'HIERARCHICAL',
+            'confidence': 'HIGH',
+            'reason': 'Single dominant hub with centralized structure'
+        }
+    
+    # DISTRIBUTED: High connectivity, no communities
+    elif density > 0.5 and clustering > 0.6 and modularity < 0.3:
+        return {
+            'type': 'DISTRIBUTED',
+            'confidence': 'HIGH',
+            'reason': 'High density and clustering without community structure'
+        }
+    
+    # MIXED: Strong community structure
+    elif modularity >= 0.4 or (num_communities > 2 and clustering > 0.5):
+        return {
+            'type': 'MIXED',
+            'confidence': 'HIGH',
+            'reason': f'{num_communities} distinct sub-communities detected'
+        }
+    
+    # MIXED (default): Can't clearly classify
+    else:
+        return {
+            'type': 'MIXED',
+            'confidence': 'MEDIUM',
+            'reason': 'Complex structure with mixed characteristics'
+        }
+```
+
+**Modularity-Based Classification:**
+
+| Modularity | Communities | Interpretation |
+|-----------|-------------|----------------|
+| **<0.3** | 1-2 | Homogeneous network (likely hierarchical or distributed) |
+| **0.3-0.4** | 2-3 | Moderate community structure (likely mixed) |
+| **>0.4** | 3+ | Strong community structure (definitely mixed) |
+
+---
+
+### **Visual Classification Guide**
+
+#### **How to Spot Each Type Visually**
+
+**HIERARCHICAL (Star Pattern):**
+```
+      HUB
+    / | | \
+   A  B C  D
+  /|  | |  |\
+ E F  G H  I J
+
+Look for:
+✓ One central node with many connections
+✓ Periphery nodes with few connections
+✓ Few or no connections between periphery nodes
+```
+
+**DISTRIBUTED (Mesh Pattern):**
+```
+A --- B --- C
+|\ X /|\ X /|
+| X  |  X  |
+D --- E --- F
+|\ X /|\ X /|
+| X  |  X  |
+G --- H --- I
+
+Look for:
+✓ Many cross-connections
+✓ Every node connects to many others
+✓ No single dominant center
+```
+
+**MIXED (Clustered Pattern):**
+```
+Cluster 1:     Bridge      Cluster 2:
+  HUB1                        HUB2
+ / | \                       / | \
+A  B  C ----bridge----- D  E  F
+
+Cluster 3:
+G --- H --- I
+|\ X /|\ X /|
+J --- K --- L
+
+Look for:
+✓ Distinct groups/clusters
+✓ Different patterns within groups
+✓ Bridge connections between groups
+```
+
+---
+
+### **Labeling Networks: Complete Example**
+
+```python
+def analyze_and_label_network(network_accounts, coordination_pairs):
+    """Complete network structure analysis"""
+    
+    # Build graph
+    G = nx.Graph()
+    for pair in coordination_pairs:
+        G.add_edge(pair['account1'], pair['account2'])
+    
+    # Calculate metrics
+    density = nx.density(G)
+    clustering = nx.average_clustering(G)
+    
+    # Detect communities
+    communities = list(nx.community.greedy_modularity_communities(G))
+    modularity = nx.community.modularity(G, communities)
+    
+    # Hub analysis
+    degree_cent = nx.degree_centrality(G)
+    sorted_cent = sorted(degree_cent.items(), key=lambda x: x[1], reverse=True)
+    hub_accounts = [acc for acc, _ in sorted_cent[:3]]
+    
+    # Calculate hub ratio
+    if len(sorted_cent) >= 2:
+        hub_ratio = sorted_cent[0][1] / sorted_cent[1][1]
+    else:
+        hub_ratio = 1.0
+    
+    # Determine structure type
+    if hub_ratio > 2.0 and modularity < 0.3 and clustering < 0.5:
+        structure_type = "HIERARCHICAL"
+        structure_detail = "Centralized around single hub"
+    elif density > 0.5 and clustering > 0.6 and modularity < 0.3:
+        structure_type = "DISTRIBUTED"
+        structure_detail = "Peer-to-peer mesh network"
+    elif modularity >= 0.4:
+        structure_type = "MIXED"
+        structure_detail = f"Multiple sub-communities (n={len(communities)})"
+    else:
+        structure_type = "MIXED"
+        structure_detail = "Complex mixed structure"
+    
+    return {
+        'structure_type': structure_type,
+        'structure_detail': structure_detail,
+        'metrics': {
+            'density': density,
+            'clustering': clustering,
+            'modularity': modularity,
+            'hub_ratio': hub_ratio,
+            'num_communities': len(communities)
+        },
+        'hub_accounts': hub_accounts,
+        'communities': [list(c) for c in communities]
+    }
+```
+
+---
+
+### **Interpretation Guide by Structure Type**
+
+#### **If Network is HIERARCHICAL:**
+
+**What it means:**
+- Centralized control or influence
+- Single point of failure
+- Clear leader(s) directing others
+
+**Investigation priorities:**
+1. Focus on the **hub account** (likely organizer/controller)
+2. Check if hub is legitimate influencer or bot master
+3. Analyze hub's content and behavior patterns
+4. Determine if followers are organic or automated
+
+**Enforcement strategy:**
+- **High impact:** Removing hub account disrupts entire network
+- **Efficient:** Target one account to affect many
+
+---
+
+#### **If Network is DISTRIBUTED:**
+
+**What it means:**
+- Peer-to-peer coordination
+- Highly organized and synchronized
+- No single point of failure
+
+**Investigation priorities:**
+1. **Very suspicious** - Unnatural pattern for humans
+2. Look for automated/bot behavior across all accounts
+3. Check account creation dates (batch created?)
+4. Analyze posting patterns (synchronized?)
+
+**Enforcement strategy:**
+- **Challenging:** No single hub to target
+- **Required:** Broad action against multiple accounts
+- **Pattern-based:** Look for common characteristics (IP, device, etc.)
+
+---
+
+#### **If Network is MIXED:**
+
+**What it means:**
+- Organized campaign with structure
+- Multiple teams or roles
+- More sophisticated coordination
+
+**Investigation priorities:**
+1. Analyze each **sub-community** separately
+2. Identify **bridge accounts** connecting communities
+3. Determine roles (content creators, amplifiers, engagers)
+4. Look for campaign coordination timeline
+
+**Enforcement strategy:**
+- **Strategic:** Target hub accounts in each sub-community
+- **Nuanced:** Different sub-communities may need different approaches
+- **Bridge accounts:** Removing these fragments the network
+
+---
+
+### **Real-World Examples with Labels**
+
+#### **Example 1: Bot Amplification Network**
+```
+Metrics:
+- Density: 0.08
+- Clustering: 0.15
+- Hub Ratio: 4.2
+- Modularity: 0.22
+
+Structure Type: HIERARCHICAL
+Reason: Single hub with 4.2x more connections than second hub
+Pattern: @bot_master controlling 50 bot accounts
+```
+
+#### **Example 2: Coordinated Troll Network**
+```
+Metrics:
+- Density: 0.78
+- Clustering: 0.85
+- Hub Ratio: 1.1
+- Modularity: 0.18
+
+Structure Type: DISTRIBUTED
+Reason: High density and clustering, even distribution
+Pattern: 20 accounts all coordinating with each other
+```
+
+#### **Example 3: Multi-Team Campaign**
+```
+Metrics:
+- Density: 0.15
+- Clustering: 0.68
+- Hub Ratio: 1.8
+- Modularity: 0.52
+- Communities: 4
+
+Structure Type: MIXED
+Reason: Strong community structure with 4 sub-communities
+Pattern: 150 accounts in 4 teams, each with local coordination
+```
+
+#### **Your Network 1 Example:**
+```
+Metrics:
+- Size: 153 accounts
+- Density: 0.049 (very low)
+- Clustering: 0.707 (very high)
+- Modularity: ~0.5 (estimated from density+clustering)
+
+Structure Type: MIXED
+Reason: Low density + high clustering = strong sub-communities
+Pattern: Multiple tight groups loosely connected
+Assessment: Organized campaign with different teams
+```
+
+---
+
 ## Centrality Measures
 
 ### **Overview**
@@ -988,6 +1521,16 @@ Investigation recommended on hub accounts.
 | **Clustering** | 0-1 | Cliquish groups | Star pattern |
 | **Degree Centrality** | 0-1 | Many connections | Few connections |
 | **Modularity** | -1 to 1 | Strong communities | Mixed network |
+| **Hub Ratio** | 1.0+ | Centralized | Distributed |
+
+### **Structure Type Determination**
+
+| Clustering | Density | Hub Ratio | Modularity | Structure Type |
+|------------|---------|-----------|------------|----------------|
+| Low (<0.4) | Low (<0.4) | High (>2.0) | Low (<0.3) | **HIERARCHICAL** |
+| High (>0.6) | High (>0.5) | Low (<1.5) | Low (<0.3) | **DISTRIBUTED** |
+| High (>0.6) | Low (<0.3) | Any | High (>0.4) | **MIXED** (sub-communities) |
+| Medium | Medium | Medium | Medium | **MIXED** (default) |
 
 ### **Suspicion Levels**
 

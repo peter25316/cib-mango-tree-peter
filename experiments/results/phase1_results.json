@@ -1,0 +1,86 @@
+{
+  "experiment": "Phase 1 - Content Similarity Only",
+  "timestamp": "2025-12-01T18:11:32.441311",
+  "phase": "Phase 1",
+  "description": "Content Similarity Only (Ultra-Conservative Baseline)",
+  "enabled_features": [
+    "identical_content",
+    "high_similarity"
+  ],
+  "disabled_features": [
+    "hashtag_coordination",
+    "url_coordination",
+    "retweet_amplification",
+    "temporal_sync"
+  ],
+  "statistics": {
+    "total_coordination_pairs": 4,
+    "unique_coordinated_accounts": 6,
+    "networks_detected": 3,
+    "identical_content_pairs": 1,
+    "high_similarity_pairs": 3
+  },
+  "networks": [
+    {
+      "network_id": 1,
+      "accounts": [
+        "Dorisstuart",
+        "fitpatriot"
+      ],
+      "size": 2,
+      "evidence": "content_similarity_only"
+    },
+    {
+      "network_id": 2,
+      "accounts": [
+        "Mystickitty41Q6",
+        "therealtoriabrooke"
+      ],
+      "size": 2,
+      "evidence": "content_similarity_only"
+    },
+    {
+      "network_id": 3,
+      "accounts": [
+        "LarryGallegosArchAngel",
+        "gatewaypundit"
+      ],
+      "size": 2,
+      "evidence": "content_similarity_only"
+    }
+  ],
+  "coordination_pairs": [
+    {
+      "type": "high_similarity",
+      "burst_index": 19,
+      "account1": "fitpatriot",
+      "account2": "Dorisstuart",
+      "similarity": 0.9486404833836858,
+      "confidence": 0.9486404833836858
+    },
+    {
+      "type": "high_similarity",
+      "burst_index": 44,
+      "account1": "Mystickitty41Q6",
+      "account2": "therealtoriabrooke",
+      "similarity": 0.9645608628659477,
+      "confidence": 0.9645608628659477
+    },
+    {
+      "type": "identical_content",
+      "burst_index": 51,
+      "account1": "gatewaypundit",
+      "account2": "LarryGallegosArchAngel",
+      "similarity": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "type": "high_similarity",
+      "burst_index": 51,
+      "account1": "LarryGallegosArchAngel",
+      "account2": "gatewaypundit",
+      "similarity": 1.0,
+      "confidence": 1.0
+    }
+  ]
+}
