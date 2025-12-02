@@ -142,36 +142,6 @@ cib-mango-tree-peter/
 
 ## Date: Week 4 - November 15, 2025
 - Topics of discussion
-    - Advanced temporal clustering with 24-dimensional features
-    - Enhanced burst detection with adaptive contributor selection
-    - Integration of multi-dimensional activity fingerprints
-    - Comparison of 2D vs 24D clustering approaches
-
-- Action Items:
-
-* [x] Implement 24-dimensional temporal features:
-    - Hourly activity fingerprints (24 features per account)
-    - Normalized hourly post distributions
-    - Weekday vs weekend 24-hour patterns
-    - Activity intensity vectors
-* [x] Develop enhanced clustering pipeline:
-    - Extended elbow method for 24D feature space
-    - Cluster validation across dimensions
-    - Feature importance analysis
-* [x] Create comparative visualizations:
-    - 24D cluster heatmaps
-    - Hour-by-hour activity fingerprints
-    - Cluster comparison plots (2D vs 24D)
-* [x] Optimize burst detection algorithm:
-    - Adaptive contributor selection based on cluster participation
-    - Enhanced burst-contributor mapping
-    - Performance improvements for large datasets
-* [x] Integrate unified pipeline with caching system
-
----
-
-## Date: Week 5 - November 22-30, 2025
-- Topics of discussion
     - Content-based coordination detection implementation
     - NetworkX integration for network analysis
     - Community detection and hub identification
@@ -220,6 +190,35 @@ cib-mango-tree-peter/
     - Error handling and edge case testing
     - UI/UX polishing and user feedback integration
 
+---
+
+## Date: Week 5 - November 22-30, 2025
+- Topics of discussion
+    - Advanced temporal clustering with 24-dimensional features
+    - Enhanced burst detection with adaptive contributor selection
+    - Integration of multi-dimensional activity fingerprints
+    - Comparison of 2D vs 24D clustering approaches
+
+- Action Items:
+
+* [x] Implement 24-dimensional temporal features:
+    - Hourly activity fingerprints (24 features per account)
+    - Normalized hourly post distributions
+    - Weekday vs weekend 24-hour patterns
+    - Activity intensity vectors
+* [x] Develop enhanced clustering pipeline:
+    - Extended elbow method for 24D feature space
+    - Cluster validation across dimensions
+    - Feature importance analysis
+* [x] Create comparative visualizations:
+    - 24D cluster heatmaps
+    - Hour-by-hour activity fingerprints
+    - Cluster comparison plots (2D vs 24D)
+* [x] Optimize burst detection algorithm:
+    - Adaptive contributor selection based on cluster participation
+    - Enhanced burst-contributor mapping
+    - Performance improvements for large datasets
+* [x] Integrate unified pipeline with caching system
 ---
 
 ## Technical Implementation Details (Weeks 4-5)
