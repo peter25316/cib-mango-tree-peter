@@ -869,7 +869,8 @@ def main():
                                 },
                                 'most_central': net_metrics.get('most_central_account', ''),
                                 'hub_accounts': hub_accounts,
-                                'accounts': network.get('accounts', [])
+                                'accounts': network.get('accounts', []),
+                                'communities': network.get('communities', {})  # Add communities data
                             })
 
                         # Extract retweet hubs from retweet coordination data
@@ -1040,6 +1041,42 @@ def main():
                                     st.markdown(f"**🎯 Most Central Account:**")
                                     st.markdown(f"`{most_central}`")
                                     st.caption("Top coordinator in network")
+
+                            # Sub-communities section (if multiple communities detected)
+                            communities_data = network.get('communities', {})
+                            greedy_mod = communities_data.get('greedy_modularity', {})
+                            community_count = greedy_mod.get('count', 0)
+
+                            if community_count > 1:
+                                st.markdown("#### 🏘️ Sub-Communities")
+                                modularity_score = greedy_mod.get('modularity', 0)
+
+                                col1, col2 = st.columns(2)
+                                with col1:
+                                    st.metric("Sub-Communities Detected", community_count)
+                                with col2:
+                                    st.metric("Modularity Score", f"{modularity_score:.3f}")
+                                    if modularity_score > 0.4:
+                                        st.caption("🔴 Strong community structure")
+                                    elif modularity_score > 0.3:
+                                        st.caption("🟡 Moderate community structure")
+                                    else:
+                                        st.caption("🟢 Weak community structure")
+
+                                st.info(f"This network has **{community_count} distinct sub-communities**, indicating organized groups that coordinate internally with limited cross-group coordination.")
+
+                                # Show community membership
+                                communities_list = greedy_mod.get('communities', [])
+                                if communities_list:
+                                    with st.expander(f"📋 View all {community_count} sub-communities"):
+                                        for comm_idx, community_members in enumerate(communities_list, 1):
+                                            st.markdown(f"**Sub-Community {comm_idx}** ({len(community_members)} accounts):")
+                                            if len(community_members) <= 15:
+                                                st.markdown(", ".join([f"`{acc}`" for acc in community_members]))
+                                            else:
+                                                shown = community_members[:15]
+                                                st.markdown(", ".join([f"`{acc}`" for acc in shown]) + f" ... (+{len(community_members)-15} more)")
+                                            st.markdown("")  # Add spacing between communities
 
                             # Hub accounts section
                             st.markdown("#### 🌟 Hub Accounts (Top Coordinators)")
