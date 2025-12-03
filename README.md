@@ -31,29 +31,55 @@ A multi-signal coordination detection system with phased evaluation framework fo
 
 ```
 cib-mango-tree-peter/
-├── research_paper/          # 📄 Complete academic research paper
-│   └── research_paper.md    # Methodology, results, discussion, appendices
-├── docs/                    # 📚 Detailed documentation
-│   ├── COORDINATION_DETECTION_EXPLAINED.md
-│   ├── KLEINBERG_ALGORITHM_EXPLAINED.md
-│   ├── NETWORK_ANALYSIS_CONCEPTS.md
-│   ├── NETWORK_EDGE_ANALYSIS.md
-│   └── TEMPORAL_CLUSTERING_EXPLAINED.md
-├── src/                     # 💻 Source code
-│   ├── unified_pipeline.py  # Main detection pipeline
-│   └── components/          # Detection modules
-├── experiments/             # 🧪 Phased evaluation framework
-│   ├── phase1_content_only.py
-│   ├── phase2_add_patterns.py
-│   ├── phase3_add_retweets.py
-│   ├── phase4_add_temporal.py
-│   ├── phase5_behavioral.py (REJECTED)
-│   └── results/             # JSON result files
-├── demo/                    # 🎨 Interactive dashboard
-│   └── interactive_burst_app.py  # Streamlit visualization app
-├── plots/                   # 📈 Generated visualizations
-├── data/                    # 📊 Sample datasets
-└── requirements.txt         # 📦 Python dependencies
+├── research_paper/               # 📄 Complete academic research paper
+│   ├── research_paper.md         # Full research paper (Markdown)
+│   ├── research_paper.pdf        # PDF version
+│   └── convert_to_pdf.py         # Markdown to PDF converter
+├── reports/                      # 📊 Project reports
+│   ├── Final_Report.md           # Final project report (Markdown)
+│   ├── Final_Report.pdf          # PDF version
+│   ├── convert_to_pdf.py         # Markdown to PDF converter
+│   └── Progress_Report/          # Weekly progress updates
+│       └── Progress_Reports.md
+├── src/                          # 💻 Source code
+│   ├── components/               # Core detection modules
+│   │   ├── burst_detector_enhanced.py
+│   │   ├── content_coordination_detector.py
+│   │   ├── data_analyzer.py
+│   │   ├── kleinberg_utils.py
+│   │   ├── temporal_clusterer.py
+│   │   └── visualizer.py
+│   ├── docs/                     # 📚 Detailed documentation
+│   │   ├── COORDINATION_DETECTION_EXPLAINED.md
+│   │   ├── KLEINBERG_ALGORITHM_EXPLAINED.md
+│   │   ├── NETWORK_ANALYSIS_CONCEPTS.md
+│   │   ├── NETWORK_EDGE_ANALYSIS.md
+│   │   └── TEMPORAL_CLUSTERING_EXPLAINED.md
+│   ├── shellscripts/             # 🔧 Pipeline scripts
+│   │   └── unified_pipeline.py   # Main detection pipeline
+│   └── tests/                    # 🧪 Testing and experiments
+│       ├── experiments/          # Phased evaluation framework
+│       │   ├── phase1_content_only.py
+│       │   ├── phase2_add_patterns.py
+│       │   ├── phase3_add_retweets.py
+│       │   ├── phase4_add_temporal.py
+│       │   ├── phase5_behavioral.py (REJECTED)
+│       │   ├── PHASE_EXPERIMENTS.md
+│       │   ├── run_all_phases.py
+│       │   └── results/          # JSON result files
+│       └── test_suite.py         # Unit tests
+├── demo/                         # 🎨 Interactive dashboard
+│   ├── interactive_burst_app.py  # Streamlit visualization app
+│   ├── fig/                      # Static figures for demo
+│   └── plots/                    # Generated visualizations
+├── data/                         # 📊 Sample datasets
+│   └── sampledata_truthsocial.csv
+├── cookbooks/                    # 📓 Jupyter notebooks
+│   └── capstone-analysis.ipynb
+├── presentation/                 # 🎤 Presentation materials
+├── proposal/                     # 📋 Project proposal documents
+├── requirements.txt              # 📦 Python dependencies
+└── README.md                     # This file
 ```
 
 ## 🚀 Quick Start
@@ -77,7 +103,7 @@ pip install -r requirements.txt
 
 ```bash
 # Run full analysis pipeline
-python src/unified_pipeline.py
+python src/shellscripts/unified_pipeline.py
 
 # Results will be saved to cache/ and visualizations to plots/
 ```
@@ -96,7 +122,7 @@ streamlit run interactive_burst_app.py
 
 ```bash
 # Run individual phases
-cd experiments
+cd src/tests/experiments
 python phase1_content_only.py
 python phase2_add_patterns.py
 python phase3_add_retweets.py
