@@ -334,70 +334,793 @@ for i, account1 in enumerate(accounts):
 
 ---
 
-## 🔗 How Coordination Pairs Become Networks
+## 🔗 How Coordination Pairs Become Networks (Using NetworkX)
 
-After generating individual coordination pairs, we build networks using graph theory:
+After generating individual coordination pairs, we use **NetworkX** (a powerful Python graph library) to build and analyze coordination networks. The actual implementation uses NetworkX exclusively—no manual graph building.
+
+---
+
+## 📊 **NetworkX-Powered Advanced Network Analysis**
+
+After building basic networks from coordination pairs, we use **NetworkX** (a powerful Python graph analysis library) to compute sophisticated network metrics and detect structural patterns.
+
+### Why NetworkX?
+
+**NetworkX provides:**
+- 🔬 **Graph algorithms** - Connected components, shortest paths, centrality measures
+- 📈 **Network metrics** - Density, clustering, betweenness, modularity
+- 🧩 **Community detection** - Find sub-groups within larger networks
+- 🎯 **Centrality analysis** - Identify key influencers and bridge accounts
+
+---
+
+### **Step 1: Building the NetworkX Graph**
 
 ```python
-# Step 1: Build coordination graph
-coordination_graph = defaultdict(set)
+import networkx as nx
+
+# Create undirected graph
+G = nx.Graph()
+
+# Add edges with attributes from coordination pairs
 for pair in all_coordination_pairs:
     account1 = pair['account1']
     account2 = pair['account2']
-    # Create bidirectional connections
-    coordination_graph[account1].add(account2)
-    coordination_graph[account2].add(account1)
-
-# Step 2: Find connected components using Depth-First Search
-def find_connected_component(start_account, visited, component):
-    if start_account in visited:
-        return
-    visited.add(start_account)
-    component.add(start_account)
+    confidence = pair['confidence']
+    evidence_type = pair['type']
     
-    # Recursively visit all connected accounts
-    for neighbor in coordination_graph[start_account]:
-        find_connected_component(neighbor, visited, component)
-
-# Step 3: Build networks from connected components
-visited = set()
-networks = []
-for account in coordination_graph:
-    if account not in visited:
-        component = set()
-        find_connected_component(account, visited, component)
+    # Check if edge already exists
+    if G.has_edge(account1, account2):
+        # Update with MAXIMUM confidence (strongest evidence wins)
+        existing_weight = G[account1][account2]['weight']
+        G[account1][account2]['weight'] = max(existing_weight, confidence)
         
-        if len(component) >= 2:  # Network must have at least 2 accounts
-            # Calculate network metrics
-            network_pairs = [p for p in coordination_pairs 
-                           if p['account1'] in component and p['account2'] in component]
-            avg_confidence = np.mean([p['confidence'] for p in network_pairs])
-            evidence_types = list(set([p['type'] for p in network_pairs]))
+        # Accumulate all evidence types
+        G[account1][account2]['evidence_types'].append(evidence_type)
+        G[account1][account2]['coordination_pairs'].append(pair)
+    else:
+        # Create new edge with attributes
+        G.add_edge(account1, account2,
+                  weight=confidence,                    # Edge weight = confidence score
+                  evidence_types=[evidence_type],       # List of evidence types
+                  coordination_pairs=[pair],            # Store original pairs
+                  burst_index=pair.get('burst_index', 0))
+```
+
+**Real Example:**
+```python
+# Coordination pairs:
+# 1. (@user1, @user2, confidence=0.85, type='hashtag_coordination')
+# 2. (@user2, @user3, confidence=0.92, type='temporal_sync')
+# 3. (@user1, @user2, confidence=0.70, type='url_coordination')  # Duplicate edge!
+
+# Resulting NetworkX graph:
+G.edges(data=True) = [
+    ('user1', 'user2', {
+        'weight': 0.85,  # max(0.85, 0.70) - strongest evidence
+        'evidence_types': ['hashtag_coordination', 'url_coordination'],
+        'coordination_pairs': [pair1, pair3]
+    }),
+    ('user2', 'user3', {
+        'weight': 0.92,
+        'evidence_types': ['temporal_sync'],
+        'coordination_pairs': [pair2]
+    })
+]
+```
+
+---
+
+### **Step 2: Finding Networks with Connected Components**
+
+```python
+# NetworkX automatically finds all connected components
+connected_components = list(nx.connected_components(G))
+
+# Each component is a set of interconnected accounts
+for component in connected_components:
+    if len(component) >= 2:  # Must have at least 2 accounts
+        # Create subgraph for this network
+        subgraph = G.subgraph(component)
+        
+        # Analyze this network independently
+        network_metrics = calculate_network_metrics(subgraph)
+```
+
+**What is a Connected Component?**
+- A **connected component** is a maximal set of nodes where every node can reach every other node through some path
+- NetworkX finds these automatically using graph traversal algorithms
+
+**Example:**
+```
+Graph edges:
+- A ↔ B
+- B ↔ C
+- D ↔ E
+- F (isolated)
+
+Connected components:
+1. {A, B, C} - all connected to each other
+2. {D, E} - connected pair
+3. {F} - single node (ignored, < 2 accounts)
+```
+
+---
+
+### **Step 3: Calculating Network Metrics**
+
+#### **Basic Metrics:**
+
+```python
+def calculate_network_metrics(subgraph):
+    metrics = {}
+    
+    # 1. DENSITY - How interconnected is the network?
+    # Formula: density = 2 * |edges| / (|nodes| * (|nodes| - 1))
+    # Range: 0.0 (no connections) to 1.0 (fully connected)
+    metrics['density'] = nx.density(subgraph)
+    
+    # 2. AVERAGE CLUSTERING - Do friends-of-friends know each other?
+    # Formula: For each node, what fraction of its neighbors are also connected?
+    # Range: 0.0 (no triangles) to 1.0 (all neighbors are interconnected)
+    metrics['avg_clustering'] = nx.average_clustering(subgraph)
+    
+    return metrics
+```
+
+**Real Example:**
+
+**Network 1: Hub-and-Spoke (Hierarchical)**
+```
+    @B
+     |
+@A - @Hub - @C
+     |
+    @D
+```
+- **Edges:** 4 (Hub↔A, Hub↔B, Hub↔C, Hub↔D)
+- **Nodes:** 5
+- **Density:** 2×4 / (5×4) = 0.4 (40% of possible connections exist)
+- **Clustering:** 0.0 (no triangles - A doesn't connect to B, etc.)
+- **Structure:** Hierarchical/Hub-and-Spoke
+
+**Network 2: Peer-to-Peer (Distributed)**
+```
+@A - @B
+|  X  |
+@C - @D
+```
+- **Edges:** 6 (A↔B, A↔C, A↔D, B↔C, B↔D, C↔D)
+- **Nodes:** 4
+- **Density:** 2×6 / (4×3) = 1.0 (100% - fully connected!)
+- **Clustering:** 1.0 (every node's neighbors are all connected)
+- **Structure:** Distributed/Peer-to-Peer
+
+---
+
+#### **Centrality Metrics - Finding Key Accounts:**
+
+```python
+def find_key_accounts(subgraph):
+    
+    # 1. DEGREE CENTRALITY - Who has the most direct connections?
+    # Formula: degree_centrality(node) = degree(node) / (total_nodes - 1)
+    # Range: 0.0 to 1.0
+    degree_centrality = nx.degree_centrality(subgraph)
+    
+    # Find most connected account
+    most_central_account = max(degree_centrality, key=degree_centrality.get)
+    
+    # 2. BETWEENNESS CENTRALITY - Who serves as a bridge between groups?
+    # Formula: fraction of shortest paths that pass through this node
+    # Range: 0.0 (not on any paths) to 1.0 (on all paths)
+    betweenness = nx.betweenness_centrality(subgraph)
+    
+    # Find bridge accounts (high betweenness)
+    bridge_accounts = {account: score for account, score 
+                      in betweenness.items() if score > 0.1}
+    
+    return {
+        'most_central_account': most_central_account,
+        'degree_centrality': degree_centrality,
+        'bridge_accounts': bridge_accounts
+    }
+```
+
+**Real Example:**
+
+**Network Structure:**
+```
+[@user1] - [@user2] - [@user5] - [@user8]
+             |
+           [@user3]
+             |
+           [@user4]
+```
+
+**Degree Centrality:**
+- @user2: 3 connections / 7 total = **0.43** (most central - connects 3 accounts)
+- @user3: 2 connections / 7 total = **0.29**
+- @user5: 2 connections / 7 total = **0.29**
+- @user1, @user4, @user8: 1 connection each = **0.14**
+
+**Betweenness Centrality:**
+- @user2: **0.50** (half of all shortest paths go through @user2)
+  - Path @user1→@user3 passes through @user2
+  - Path @user1→@user4 passes through @user2
+  - etc.
+- @user5: **0.33** (bridge between @user2 and @user8)
+- Others: **0.0** (no paths pass through them)
+
+**Result:**
+- **Most central account:** @user2 (hub account)
+- **Bridge accounts:** {@user2: 0.50, @user5: 0.33} (connect different parts of network)
+
+---
+
+### **Step 4: Community Detection**
+
+```python
+def detect_communities(subgraph):
+    """Find sub-communities within larger networks."""
+    
+    # METHOD 1: Greedy Modularity Maximization
+    # Optimizes modularity score - measures how well-separated communities are
+    communities = list(nx.community.greedy_modularity_communities(subgraph))
+    
+    # Calculate modularity score (quality metric)
+    # Range: -0.5 to 1.0
+    # > 0.3 = strong community structure
+    modularity = nx.community.modularity(subgraph, communities)
+    
+    # METHOD 2: Label Propagation (alternative algorithm)
+    # Nodes "vote" on their community based on neighbors
+    label_prop_communities = list(nx.community.label_propagation_communities(subgraph))
+    
+    return {
+        'greedy_modularity': {
+            'communities': [list(community) for community in communities],
+            'count': len(communities),
+            'modularity': modularity
+        },
+        'label_propagation': {
+            'communities': [list(community) for community in label_prop_communities],
+            'count': len(label_prop_communities)
+        }
+    }
+```
+
+**Real Example:**
+
+**Large Network (20 accounts) with Sub-Groups:**
+```
+Group 1 (Political):          Group 2 (News):
+[@political1] - [@political2]   [@news1] - [@news2]
+     |              |                |          |
+[@political3] - [@political4]   [@news3] - [@news4]
+          \        /                    \      /
+           [@bridge_account_X] -------- [@bridge_account_Y]
+                                         
+Group 3 (Influencers):
+[@influencer1] - [@influencer2] - [@influencer3]
+```
+
+**Community Detection Result:**
+```json
+{
+  "greedy_modularity": {
+    "communities": [
+      ["political1", "political2", "political3", "political4"],
+      ["news1", "news2", "news3", "news4"],
+      ["influencer1", "influencer2", "influencer3"],
+      ["bridge_account_X", "bridge_account_Y"]
+    ],
+    "count": 4,
+    "modularity": 0.67  // Strong community structure!
+  }
+}
+```
+
+**Interpretation:**
+- **4 distinct communities** detected within the network
+- **Modularity 0.67** = very strong community structure (> 0.3 threshold)
+- Bridge accounts identified as separate micro-community
+
+---
+
+### **Step 5: Network Structure Classification**
+
+```python
+def analyze_network_structure(subgraph):
+    """Classify network as hierarchical vs distributed."""
+    
+    # Calculate degree distribution
+    degrees = [degree for node, degree in subgraph.degree()]
+    
+    degree_stats = {
+        'max': max(degrees),
+        'mean': np.mean(degrees),
+        'std': np.std(degrees)
+    }
+    
+    # Calculate Gini coefficient for degree inequality
+    # Range: 0 (perfect equality) to 1 (perfect inequality)
+    gini = calculate_gini_coefficient(degrees)
+    
+    density = nx.density(subgraph)
+    clustering = nx.average_clustering(subgraph)
+    
+    # Classification logic
+    if gini > 0.6 and clustering < 0.3:
+        structure_type = 'HIERARCHICAL'  # Hub-and-spoke
+    elif density > 0.7 and clustering > 0.7:
+        structure_type = 'DISTRIBUTED'   # Peer-to-peer
+    elif clustering > 0.5:
+        structure_type = 'MIXED'         # Multiple sub-communities
+    else:
+        structure_type = 'SPARSE'        # Loosely connected
+    
+    return {
+        'type': structure_type,
+        'degree_stats': degree_stats,
+        'gini_coefficient': gini,
+        'density': density,
+        'clustering': clustering
+    }
+```
+
+**Real Examples:**
+
+**1. Hierarchical (Hub-and-Spoke):**
+```
+Network: 1 central hub + 10 peripheral accounts
+Gini: 0.75 (high inequality - hub has many connections, others have few)
+Clustering: 0.1 (low - peripherals don't connect to each other)
+Classification: HIERARCHICAL
+```
+
+**2. Distributed (Peer-to-Peer):**
+```
+Network: 6 accounts all heavily interconnected
+Density: 0.87 (87% of possible connections exist)
+Clustering: 0.82 (most neighbors are also connected)
+Classification: DISTRIBUTED
+```
+
+**3. Mixed (Sub-Communities):**
+```
+Network: 3 tight clusters with sparse inter-cluster connections
+Clustering: 0.65 (high within clusters)
+Density: 0.35 (low overall due to sparse inter-cluster links)
+Classification: MIXED
+```
+
+---
+
+### **Complete NetworkX Analysis Pipeline**
+
+```python
+def build_and_analyze_networks(coordination_pairs):
+    """Complete NetworkX-powered network analysis pipeline."""
+    
+    # Step 1: Build NetworkX graph
+    G = nx.Graph()
+    for pair in coordination_pairs:
+        # Add edges with max confidence rule
+        if G.has_edge(pair['account1'], pair['account2']):
+            G[pair['account1']][pair['account2']]['weight'] = max(
+                G[pair['account1']][pair['account2']]['weight'],
+                pair['confidence']
+            )
+        else:
+            G.add_edge(pair['account1'], pair['account2'],
+                      weight=pair['confidence'],
+                      evidence_types=[pair['type']])
+    
+    # Step 2: Find connected components (networks)
+    networks = []
+    for component in nx.connected_components(G):
+        if len(component) >= 2:
+            subgraph = G.subgraph(component)
+            
+            # Step 3: Calculate metrics for this network
+            metrics = {
+                'nodes': subgraph.number_of_nodes(),
+                'edges': subgraph.number_of_edges(),
+                'density': nx.density(subgraph),
+                'avg_clustering': nx.average_clustering(subgraph),
+                **find_key_accounts(subgraph),
+                'communities': detect_communities(subgraph),
+                'structure': analyze_network_structure(subgraph)
+            }
             
             networks.append({
                 'accounts': list(component),
                 'size': len(component),
-                'avg_confidence': avg_confidence,
-                'evidence_types': evidence_types,
-                'risk_level': 'HIGH' if avg_confidence > 0.8 else 'MEDIUM' if avg_confidence > 0.6 else 'LOW'
+                'metrics': metrics
             })
+    
+    return networks
 ```
 
-**Network Building Example:**
-- **Pair 1:** @A ↔ @B (hashtag coordination, confidence: 85%)
-- **Pair 2:** @B ↔ @C (temporal synchronization, confidence: 92%)  
-- **Pair 3:** @C ↔ @D (URL coordination, confidence: 80%)
-- **Pair 4:** @E ↔ @F (identical content, confidence: 100%)
+---
 
-**Resulting Networks:**
-- **Network 1:** [@A, @B, @C, @D] - 4 accounts connected through chain
-  - Average confidence: (85% + 92% + 80%) / 3 = 85.7%
-  - Evidence types: [hashtag_coordination, ultra_conservative_temporal_sync, url_coordination]
-  - Risk level: HIGH
-- **Network 2:** [@E, @F] - 2 accounts with identical content
-  - Average confidence: 100%  
-  - Evidence types: [identical_content]
-  - Risk level: HIGH
+### **NetworkX Metrics Summary Table**
+
+| Metric | Formula | Range | Interpretation |
+|--------|---------|-------|----------------|
+| **Density** | 2×edges / (nodes×(nodes-1)) | 0.0 - 1.0 | 1.0 = fully connected, 0.0 = no connections |
+| **Clustering** | Avg fraction of neighbor pairs that are connected | 0.0 - 1.0 | 1.0 = all triangles closed, 0.0 = no triangles |
+| **Degree Centrality** | connections / (total_nodes - 1) | 0.0 - 1.0 | 1.0 = connected to everyone, 0.0 = isolated |
+| **Betweenness** | Fraction of shortest paths through node | 0.0 - 1.0 | High = bridge account between groups |
+| **Modularity** | Quality of community division | -0.5 - 1.0 | > 0.3 = strong community structure |
+| **Gini Coefficient** | Inequality of degree distribution | 0.0 - 1.0 | 1.0 = one hub dominates, 0.0 = all equal |
+
+---
+
+### **Why These Metrics Matter for Coordination Detection**
+
+**1. Density + Clustering → Detect Coordination Type:**
+- **High density, high clustering** = Tightly coordinated peer-to-peer operation
+- **Low density, low clustering** = Hierarchical command-and-control structure
+
+**2. Centrality Measures → Identify Key Targets:**
+- **High degree centrality** = Hub accounts orchestrating coordination
+- **High betweenness** = Bridge accounts connecting separate groups
+
+**3. Community Detection → Find Sub-Operations:**
+- Multiple communities within one network = Complex multi-layered operation
+- Single tight community = Focused, single-purpose coordination
+
+**4. Network Structure → Understand Operational Model:**
+- **Hierarchical** = Centralized control (easier to disrupt by removing hub)
+- **Distributed** = Decentralized coordination (more resilient)
+- **Mixed** = Sophisticated operation with specialized sub-teams
+
+---
+
+## 🎯 **How Confidence Scores Are Used Throughout the Pipeline**
+
+Confidence scores flow through the **entire detection system** from individual coordination pairs to final risk assessments and visualizations. Here's the complete journey:
+
+---
+
+### **1. Calculated for Each Coordination Pair**
+
+Every single coordination pair gets assigned a confidence score (0.0 to 1.0) based on the evidence type:
+
+```python
+# CONTENT SIMILARITY
+if similarity >= 0.95:  # Identical content
+    confidence = 1.0
+elif similarity >= 0.85:  # High similarity
+    confidence = min(similarity * 1.2, 1.0)
+
+# HASHTAG COORDINATION
+if jaccard_similarity >= 0.6 and shared_hashtags >= 2:
+    confidence = min(jaccard_similarity * 1.5, 1.0)
+
+# URL COORDINATION
+if shared_urls >= 1:
+    confidence = min(len(shared_urls) * 0.8, 1.0)
+
+# RETWEET AMPLIFICATION
+base_confidence = min(len(retweeters) / 10.0, 1.0)
+# Plus temporal boost if retweeters acted in sync
+temporal_boost = (cluster_strength * timing_precision) * 0.3
+final_confidence = min(base_confidence + temporal_boost, 1.0)
+
+# TEMPORAL SYNCHRONIZATION
+timing_precision = max(0, 1 - (avg_sync_time / 30))  # 30-second window
+sync_strength = min(sync_count / 3.0, 1.0)  # 3+ posts required
+confidence = (timing_precision + sync_strength) / 2
+# Only used if confidence >= 0.8 (80% threshold)
+```
+
+**Example Coordination Pair:**
+```python
+{
+    'type': 'hashtag_coordination',
+    'account1': 'user123',
+    'account2': 'user456',
+    'shared_hashtags': ['#PatriotsUnite', '#AmericaFirst', '#MAGA'],
+    'jaccard_similarity': 0.75,
+    'confidence': 1.0,  # min(0.75 * 1.5, 1.0) = 1.0
+    'evidence_strength': 'HIGH'
+}
+```
+
+---
+
+### **2. Stored as NetworkX Edge Weights**
+
+When building the coordination graph, confidence becomes the **edge weight**:
+
+```python
+# Building NetworkX graph
+G = nx.Graph()
+
+for pair in coordination_pairs:
+    account1 = pair['account1']
+    account2 = pair['account2']
+    confidence = pair['confidence']  # ← Extract confidence
+    
+    if G.has_edge(account1, account2):
+        # MAXIMUM RULE: Keep strongest evidence
+        existing_weight = G[account1][account2]['weight']
+        G[account1][account2]['weight'] = max(existing_weight, confidence)
+    else:
+        # New edge: confidence becomes weight
+        G.add_edge(account1, account2, weight=confidence)
+```
+
+**Why this matters:**
+- Edge weight represents **strength of coordination evidence**
+- Graph algorithms can use weights for weighted analyses
+- Visualization can scale edge thickness by confidence
+
+**Example Graph:**
+```python
+G.edges(data=True) = [
+    ('user1', 'user2', {'weight': 0.85}),  # 85% confidence
+    ('user2', 'user3', {'weight': 1.0}),   # 100% confidence (identical content)
+    ('user3', 'user4', {'weight': 0.65})   # 65% confidence
+]
+```
+
+---
+
+### **3. Aggregated to Network-Level Average Confidence**
+
+For each detected network, we calculate **average confidence** across all coordination pairs in that network:
+
+```python
+# For each network (connected component)
+for component in nx.connected_components(G):
+    subgraph = G.subgraph(component)
+    
+    # Get all coordination pairs in this network
+    network_pairs = []
+    for edge in subgraph.edges(data=True):
+        network_pairs.extend(edge[2]['coordination_pairs'])
+    
+    # Calculate average confidence
+    avg_confidence = np.mean([p['confidence'] for p in network_pairs])
+    
+    network = {
+        'accounts': list(component),
+        'size': len(component),
+        'coordination_pairs': network_pairs,
+        'avg_confidence': avg_confidence  # ← Network-level confidence
+    }
+```
+
+**Example:**
+```
+Network 1: 4 accounts, 6 coordination pairs
+Pair confidences: [0.85, 0.92, 0.80, 1.0, 0.88, 0.95]
+Average confidence: (0.85 + 0.92 + 0.80 + 1.0 + 0.88 + 0.95) / 6 = 0.90 (90%)
+```
+
+---
+
+### **4. Used to Classify Network Risk Level**
+
+Average confidence determines the **risk level** for each network:
+
+```python
+# Risk classification based on average confidence
+if avg_confidence > 0.8:
+    risk_level = 'HIGH'      # Strong evidence (>80%)
+elif avg_confidence > 0.6:
+    risk_level = 'MEDIUM'    # Moderate evidence (60-80%)
+else:
+    risk_level = 'LOW'       # Weak evidence (<60%)
+
+network['risk_level'] = risk_level
+```
+
+**Example Network Classifications:**
+
+| Network | Size | Avg Confidence | Risk Level | Interpretation |
+|---------|------|----------------|------------|----------------|
+| Network 1 | 153 accounts | 0.70 | MEDIUM | Large network, moderate evidence |
+| Network 2 | 12 accounts | 0.95 | HIGH | Small network, very strong evidence (likely retweet bots) |
+| Network 3 | 8 accounts | 0.58 | LOW | Small network, weak evidence (may be coincidental) |
+| Network 4 | 25 accounts | 0.88 | HIGH | Medium network, strong evidence across multiple signals |
+
+**Key Insight:** Network size ≠ risk level! A small network with high confidence (like 10 accounts posting identical content) is higher risk than a large network with low confidence (200 accounts with weak hashtag overlap).
+
+---
+
+### **5. Determines Overall Detection Confidence Level**
+
+The system calculates an **overall confidence level** for the entire analysis:
+
+```python
+def _determine_confidence_level(results):
+    """Determine overall confidence in coordination detection."""
+    
+    stats = results['summary_stats']
+    identical_content = stats['identical_content_instances']
+    high_risk_networks = stats['high_risk_networks']
+    total_pairs = stats['total_coordination_pairs']
+    
+    # Hierarchical confidence assessment
+    if identical_content >= 10 and high_risk_networks >= 2:
+        return 'VERY_HIGH'  # Strong multi-signal evidence
+    elif identical_content >= 5 or high_risk_networks >= 1:
+        return 'HIGH'       # Clear evidence of coordination
+    elif total_pairs >= 10:
+        return 'MEDIUM'     # Multiple weak signals
+    elif total_pairs >= 3:
+        return 'LOW'        # Minimal evidence
+    else:
+        return 'NONE'       # No meaningful coordination detected
+```
+
+**Example Results:**
+```
+Analysis 1:
+- 15 identical content pairs
+- 3 high-risk networks
+- Overall confidence: VERY_HIGH ✅
+
+Analysis 2:
+- 0 identical content pairs
+- 1 high-risk network (RT amplification)
+- Overall confidence: HIGH ✅
+
+Analysis 3:
+- 0 identical content pairs
+- 0 high-risk networks
+- 12 total pairs (all low-confidence hashtag coordination)
+- Overall confidence: MEDIUM ⚠️
+
+Analysis 4:
+- 2 total pairs (weak URL coordination)
+- Overall confidence: LOW ⚠️
+```
+
+---
+
+### **6. Displayed in Console Output**
+
+Confidence is reported throughout pipeline execution:
+
+```python
+# Print coordination detection results
+print(f"\n🎯 CONTENT COORDINATION RESULTS")
+print(f"📊 Overall Confidence: {confidence_level}")  # VERY_HIGH, HIGH, MEDIUM, LOW, NONE
+print(f"🤝 Total coordination pairs: {stats['total_coordination_pairs']}")
+print(f"⚠️ High-risk networks: {stats['high_risk_networks']}")
+
+# Per-network reporting
+for network in networks:
+    print(f"  Network {network['network_id']}: {network['size']} accounts")
+    print(f"    - Avg confidence: {network['avg_confidence']:.2f}")
+    print(f"    - Risk level: {network['risk_level']}")
+```
+
+**Console Output Example:**
+```
+🎯 CONTENT COORDINATION RESULTS
+================================================
+📊 Overall Confidence: HIGH
+🤝 Total coordination pairs: 1,110
+⚠️ High-risk networks: 5
+
+🕸️ Coordination Networks:
+  Network 1: 153 accounts
+    - Avg confidence: 0.70
+    - Risk level: MEDIUM
+  Network 2: 12 accounts
+    - Avg confidence: 0.95
+    - Risk level: HIGH
+  Network 3: 8 accounts
+    - Avg confidence: 0.88
+    - Risk level: HIGH
+```
+
+---
+
+### **7. Visualized in Dashboard and Plots**
+
+Confidence scores drive visualization decisions:
+
+#### **A. Overall Confidence Pie Chart:**
+```python
+# Color-coded confidence level visualization
+confidence_colors = {
+    'VERY_HIGH': '#8B0000',  # Dark red
+    'HIGH': '#d62728',       # Red
+    'MEDIUM': '#ff7f0e',     # Orange
+    'LOW': '#2ca02c',        # Green
+    'NONE': '#808080'        # Gray
+}
+
+ax.pie([1], labels=[confidence_level], 
+       colors=[confidence_colors[confidence_level]],
+       startangle=90)
+ax.set_title('Overall Detection Confidence')
+```
+
+#### **B. Network Scatter Plot (Size vs Confidence):**
+```python
+# Plot networks by size and average confidence
+for network in networks:
+    x = network['size']
+    y = network['avg_confidence']
+    color = 'red' if network['risk_level'] == 'HIGH' else 'orange'
+    plt.scatter(x, y, color=color, s=100)
+
+plt.xlabel('Network Size (accounts)')
+plt.ylabel('Average Confidence Score')
+plt.title('Coordination Networks: Size vs Confidence')
+```
+
+This visualization reveals:
+- **Small + high confidence** = Tightly coordinated bots (top-left)
+- **Large + medium confidence** = Broad campaign with mixed signals (top-right)
+- **Any + low confidence** = Possibly organic behavior (bottom)
+
+#### **C. Network Graph Visualization:**
+```python
+# Edge thickness = confidence
+edge_widths = [G[u][v]['weight'] * 3 for u, v in G.edges()]  # Scale by confidence
+
+nx.draw_networkx_edges(G, pos, width=edge_widths, alpha=0.5)
+# Thicker edges = stronger coordination evidence
+```
+
+---
+
+### **Summary: Confidence Score Flow Through System**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 1. DETECTION: Calculate confidence for each pair           │
+│    - Content: 1.0 (identical) or sim×1.2                   │
+│    - Hashtag: min(jaccard×1.5, 1.0)                        │
+│    - URL: min(count×0.8, 1.0)                              │
+│    - Retweet: min(count/10, 1.0) + temporal_boost         │
+│    - Temporal: (timing + strength) / 2                     │
+└────────────────────┬────────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 2. GRAPH BUILDING: Confidence → NetworkX edge weight       │
+│    - G.add_edge(a1, a2, weight=confidence)                 │
+│    - Maximum rule for duplicate edges                      │
+└────────────────────┬────────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 3. NETWORK ANALYSIS: Average confidence per network        │
+│    - avg_confidence = mean(all pair confidences)           │
+└────────────────────┬────────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 4. RISK CLASSIFICATION: Confidence → Risk level            │
+│    - >0.8 = HIGH risk                                      │
+│    - >0.6 = MEDIUM risk                                    │
+│    - ≤0.6 = LOW risk                                       │
+└────────────────────┬────────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 5. OVERALL ASSESSMENT: System-wide confidence              │
+│    - VERY_HIGH, HIGH, MEDIUM, LOW, or NONE                 │
+│    - Based on high-risk networks + identical content       │
+└────────────────────┬────────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 6. OUTPUT & VISUALIZATION:                                 │
+│    - Console reports (per network + overall)               │
+│    - Confidence color coding (red/orange/green)            │
+│    - Edge thickness in network graphs                      │
+│    - Scatter plots (size vs confidence)                    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Key Takeaway:** Confidence is **not just a number** - it's the primary metric that drives risk assessment, prioritization, visualization, and decision-making throughout the entire coordination detection pipeline.
 
 ---
 
