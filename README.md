@@ -36,6 +36,10 @@ Watch our interactive dashboard and detection pipeline in action:
 > **📹 Video Display Options:**
 > - **GitHub Web:** The video above should display directly on GitHub
 > - **Direct Link:** [Click here to download/view the video](demo/fig/poster-video.mp4)
+
+https://github.com/user-attachments/assets/2a96f5e9-b1af-4f44-ae27-65bdd6aea3ba
+
+
 > - **Local:** Run `demo/interactive_burst_app.py` for live interactive dashboard
 
 **What the video demonstrates:**
