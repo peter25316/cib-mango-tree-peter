@@ -27,6 +27,23 @@ A multi-signal coordination detection system with phased evaluation framework fo
 4. 📝 **Content similarity:** 0.4% (4 pairs) — Optional
 5. 🔗 **URL coordination:** 0.3% (3 pairs) — Optional
 
+## 🎥 Video Showcase
+
+Watch our interactive dashboard and detection pipeline in action:
+
+<video src="demo/fig/poster-video.mp4" controls width="100%"></video>
+
+> **📹 Video Display Options:**
+> - **GitHub Web:** The video above should display directly on GitHub
+> - **Direct Link:** [Click here to download/view the video](demo/fig/poster-video.mp4)
+> - **Local:** Run `demo/interactive_burst_app.py` for live interactive dashboard
+
+**What the video demonstrates:**
+- 📊 Interactive Streamlit dashboard for burst detection visualization
+- 🕸️ Network coordination analysis with real-time metrics
+- 📈 Temporal burst patterns and activity fingerprints
+- 🔍 Multi-signal coordination detection in action
+
 ## 📁 Repository Structure
 
 ```
