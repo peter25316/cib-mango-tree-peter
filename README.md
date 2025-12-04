@@ -33,11 +33,12 @@ Watch our interactive dashboard and detection pipeline in action:
 
 <video src="demo/fig/poster-video.mp4" controls width="100%"></video>
 
-> - **Direct Link:** [Click here to download/view the video](demo/fig/poster-video.mp4)
+
+https://github.com/user-attachments/assets/256aff79-d533-4bd5-8a76-e2fda2e8e43e
 
 
 
-> - **Local:** Run `demo/interactive_burst_app.py` for live interactive dashboard
+
 
 **What the video demonstrates:**
 - 📊 Interactive Streamlit dashboard for burst detection visualization
