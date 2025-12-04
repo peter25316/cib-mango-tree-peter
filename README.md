@@ -292,6 +292,130 @@ This is a **research tool** for detecting coordination patterns. Results should 
 - Interpreted as probabilistic evidence, not definitive proof
 - Used in combination with domain expertise
 
+---
+
+## 🔧 Troubleshooting & Known Issues
+
+### **Critical Version Issues**
+
+#### **1. Streamlit UI Components Not Rendering** ⚠️
+**Symptom:** Dashboard loads but expanders, columns, or charts don't display
+- **Cause:** Streamlit version < 1.30.0
+- **Solution:**
+  ```bash
+  pip install --upgrade streamlit
+  streamlit --version  # Should show >= 1.30.0
+  ```
+- **Test:** Run `streamlit run demo/interactive_burst_app.py`
+
+#### **2. Datetime Conversion Errors in Pipeline** ⚠️
+**Symptom:** `TypeError: Cannot compare tz-naive and tz-aware datetime` when running `unified_pipeline.py`
+- **Location:** Before coordination analysis (lines ~150-200 in `src/shellscripts/unified_pipeline.py`)
+- **Cause:** pandas >= 2.0.0 changed datetime/timezone handling
+- **Solution:** Ensure all timestamps are timezone-naive before analysis
+  ```python
+  # CORRECT syntax (in unified_pipeline.py):
+  df['post_timestamp'] = pd.to_datetime(df['created_at']).dt.tz_localize(None)
+  
+  # INCORRECT (common mistake):
+  df['post_timestamp'] = pd.to_datetime(df['created_at']).tz_convert(None)
+  ```
+- **Be wary of:** `.tz_convert()` vs `.dt.tz_localize(None)` - syntax matters!
+
+#### **3. NetworkX Community Detection Missing**
+**Symptom:** `AttributeError: 'module' has no attribute 'greedy_modularity_communities'`
+- **Cause:** networkx version < 3.1
+- **Solution:**
+  ```bash
+  pip install --upgrade networkx
+  python -c "import networkx; print(networkx.__version__)"  # Should be >= 3.1
+  ```
+
+#### **4. Polars DataFrame Conversion Issues**
+**Symptom:** `AttributeError` on `.to_pandas()` calls
+- **Cause:** Polars version mismatch (API changed in v1.0+)
+- **Solution:**
+  ```bash
+  pip install --upgrade polars
+  ```
+
+### **Common Runtime Issues**
+
+#### **Import Errors**
+**Symptom:** `ModuleNotFoundError: No module named 'components'`
+- **Cause:** Running from wrong directory or virtual environment not activated
+- **Solution:**
+  ```bash
+  # Activate virtual environment first
+  .venv\Scripts\activate  # Windows
+  source .venv/bin/activate  # Unix/Mac
+  
+  # Run from project root
+  cd D:\GitHub\cib-mango-tree-peter
+  python src/shellscripts/unified_pipeline.py
+  ```
+
+#### **Streamlit Cache Issues**
+**Symptom:** Dashboard shows stale data or crashes
+- **Solution:**
+  ```bash
+  streamlit cache clear
+  ```
+
+#### **PDF Conversion Fails**
+**Symptom:** `convert_to_pdf.py` crashes with import error
+- **Cause:** Missing optional `markdown` package
+- **Solution:**
+  ```bash
+  pip install markdown
+  ```
+
+### **Version Compatibility Matrix**
+
+| Component | Minimum Version | Tested Version | Notes |
+|-----------|----------------|----------------|-------|
+| Python | 3.12 | 3.12 | Required for modern type hints |
+| streamlit | 1.30.0 | 1.51.0 | ⚠️ <1.30 causes UI failures |
+| pandas | 2.0.0 | 2.3.3 | ⚠️ v2.0+ changed datetime handling |
+| polars | 1.0.0 | 1.34.0 | API breaking changes in v1.0 |
+| networkx | 3.1 | 3.6 | Required for community detection |
+| plotly | 5.17.0 | 6.3.1 | Interactive visualizations |
+| scikit-learn | 1.3.0 | 1.7.2 | KMeans clustering |
+| statsmodels | 0.14.0 | 0.14.5 | ACF, ADF tests |
+
+### **Installation Verification**
+
+After installing requirements, verify critical components:
+
+```bash
+# Activate virtual environment
+.venv\Scripts\activate  # Windows
+source .venv/bin/activate  # Unix/Mac
+
+# Check versions
+python --version          # Should be >= 3.12
+pip list | grep streamlit # Should be >= 1.30.0
+pip list | grep pandas    # Should be >= 2.0.0
+pip list | grep networkx  # Should be >= 3.1
+
+# Test imports
+python -c "import streamlit; import pandas; import networkx; print('✓ All imports successful')"
+
+# Test dashboard
+streamlit run demo/interactive_burst_app.py
+```
+
+### **Getting Help**
+
+If issues persist:
+1. **Check requirements.txt** - Contains detailed version warnings and solutions
+2. **Review error message** - Most errors indicate specific version/syntax issues
+3. **Upgrade pip first:** `python -m pip install --upgrade pip`
+4. **Reinstall dependencies:** `pip install -r requirements.txt --force-reinstall`
+5. **Check virtual environment:** Ensure you're in `.venv` (prompt should show `(.venv)`)
+
+---
+
 ## 📧 Contact
 
 **Project Author:** Peter Huynh  

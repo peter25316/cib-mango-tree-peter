@@ -7,10 +7,46 @@
 # ============================================================================
 
 # ============================================================================
+# ⚠️ CRITICAL VERSION WARNINGS
+# ============================================================================
+#
+# 1. STREAMLIT VERSION COMPATIBILITY:
+#    - Streamlit >= 1.28.0 is REQUIRED
+#    - Streamlit < 1.28.0 may cause UI components to NOT RENDER properly
+#    - Known issues with older versions:
+#      * st.expander() may fail silently
+#      * st.columns() layout breaks
+#      * Plotly charts don't display
+#      * File uploader widget crashes
+#    - Recommended: streamlit >= 1.30.0 (tested with 1.51.0)
+#    - If UI issues occur: pip install --upgrade streamlit
+#
+# 2. DATETIME CONVERSION IN UNIFIED PIPELINE:
+#    - datetime handling in src/shellscripts/unified_pipeline.py
+#      BEFORE coordination analysis may work differently across pandas versions
+#    - pandas >= 2.0.0 changed datetime handling with timezones
+#    - Symptom: "TypeError: Cannot compare tz-naive and tz-aware datetime"
+#    - Solution: Ensure all timestamps are timezone-naive before analysis
+#    - Code location: unified_pipeline.py lines ~150-200 (before coordinator call)
+#    - BE WARY OF SYNTAX: Use .dt.tz_localize(None) not .tz_convert(None)
+#
+# 3. POLARS VERSION:
+#    - polars >= 1.0.0 introduced breaking API changes
+#    - Ensure consistent version across project
+#    - Known issue: .to_pandas() behavior changed in 1.0+
+#
+# 4. NETWORKX VERSION:
+#    - networkx >= 3.1 required for community detection methods
+#    - Older versions lack greedy_modularity_communities()
+#
+# ============================================================================
+
+# ============================================================================
 # CORE DATA PROCESSING
 # ============================================================================
 polars>=1.0.0              # Fast DataFrame library (tested with 1.34.0)
 pandas>=2.0.0              # Data manipulation (tested with 2.3.3)
+                           # ⚠️ Note: v2.0+ changed datetime/timezone behavior
 numpy>=1.24.0              # Numerical computing (tested with 2.3.4)
 
 # ============================================================================
@@ -28,6 +64,8 @@ scipy>=1.11.0              # Scientific computing
 # NETWORK ANALYSIS
 # ============================================================================
 networkx>=3.1              # Network/graph analysis and community detection (tested with 3.6)
+                           # ⚠️ Required for: greedy_modularity_communities,
+                           #    label_propagation_communities
 
 # ============================================================================
 # VISUALIZATION
@@ -39,12 +77,20 @@ seaborn>=0.12.0            # Statistical data visualization (tested with 0.13.2)
 # ============================================================================
 # WEB APPLICATION (STREAMLIT DEMO)
 # ============================================================================
-streamlit>=1.28.0          # Interactive web app framework (tested with 1.51.0)
+streamlit>=1.30.0          # ⚠️ CRITICAL: >=1.30 required for UI components
+                           # Interactive web app framework (tested with 1.51.0)
+                           # Older versions cause render failures
 
 # ============================================================================
 # TEXT PROCESSING & UTILITIES
 # ============================================================================
 python-dateutil>=2.8.0     # Date parsing and timezone handling
+
+# ============================================================================
+# PDF CONVERSION (Optional - for reports/research_paper)
+# ============================================================================
+markdown>=3.4.0            # Markdown to HTML conversion (for convert_to_pdf.py)
+                           # Optional: Only needed if regenerating PDFs from markdown
 
 # ============================================================================
 # OPTIONAL DEVELOPMENT DEPENDENCIES
@@ -56,6 +102,75 @@ python-dateutil>=2.8.0     # Date parsing and timezone handling
 # ipython>=8.12.0          # Enhanced Python shell
 
 # ============================================================================
+# COMPLETE IMPORT INVENTORY
+# ============================================================================
+# Core project imports (all included above):
+# - polars (pl)               ✓ Core data processing
+# - pandas (pd)               ✓ Data manipulation
+# - numpy (np)                ✓ Numerical operations
+# - datetime                  ✓ Python stdlib (no install needed)
+# - typing                    ✓ Python stdlib (no install needed)
+# - collections               ✓ Python stdlib (no install needed)
+# - re                        ✓ Python stdlib (no install needed)
+# - difflib                   ✓ Python stdlib (no install needed)
+# - networkx (nx)             ✓ Network analysis
+# - matplotlib.pyplot         ✓ Static plots
+# - matplotlib.patches        ✓ Visualization elements
+# - seaborn (sns)             ✓ Statistical viz
+# - plotly.express (px)       ✓ Interactive plots
+# - plotly.graph_objects (go) ✓ Custom plotly charts
+# - plotly.subplots           ✓ Multi-panel plots
+# - sklearn.preprocessing     ✓ StandardScaler
+# - sklearn.cluster           ✓ KMeans
+# - statsmodels.tsa.stattools ✓ ACF, ADF test
+# - scipy                     ✓ Scientific computing
+# - streamlit (st)            ✓ Web dashboard
+# - tempfile                  ✓ Python stdlib (no install needed)
+# - sys, os, io               ✓ Python stdlib (no install needed)
+# - pathlib                   ✓ Python stdlib (no install needed)
+# - base64                    ✓ Python stdlib (no install needed)
+# - subprocess                ✓ Python stdlib (no install needed)
+#
+# ============================================================================
+# KNOWN COMPATIBILITY ISSUES & SOLUTIONS
+# ============================================================================
+#
+# Issue 1: Streamlit Components Not Rendering
+# -------------------------------------------
+# Symptom: Dashboard loads but expanders/columns don't show
+# Cause: Streamlit < 1.28.0
+# Solution: pip install --upgrade streamlit
+# Test: streamlit --version (should be >= 1.30.0)
+#
+# Issue 2: Datetime Comparison Errors in Pipeline
+# -----------------------------------------------
+# Symptom: TypeError when running unified_pipeline.py
+# Message: "Cannot compare tz-naive and tz-aware datetime"
+# Location: Before coordination analysis (lines ~150-200)
+# Cause: Mixed timezone-aware/naive datetimes from pandas >=2.0
+# Solution: Add .dt.tz_localize(None) to normalize timestamps
+# Example Fix:
+#   df['post_timestamp'] = pd.to_datetime(df['created_at']).dt.tz_localize(None)
+#
+# Issue 3: Polars DataFrame Conversion Issues
+# ------------------------------------------
+# Symptom: AttributeError on .to_pandas()
+# Cause: API change in polars 1.0+
+# Solution: Ensure polars >= 1.0.0 throughout project
+#
+# Issue 4: NetworkX Community Detection Missing
+# --------------------------------------------
+# Symptom: AttributeError: 'module' has no attribute 'greedy_modularity_communities'
+# Cause: networkx < 3.1
+# Solution: pip install --upgrade networkx
+#
+# Issue 5: PDF Conversion Fails
+# ----------------------------
+# Symptom: convert_to_pdf.py crashes
+# Cause: Missing markdown package
+# Solution: pip install markdown (optional dependency)
+#
+# ============================================================================
 # NOTES
 # ============================================================================
 # - Burst Detection: Uses custom Kleinberg algorithm implementation
@@ -63,20 +178,24 @@ python-dateutil>=2.8.0     # Date parsing and timezone handling
 #
 # - The project structure:
 #   - src/components/: Core analysis components
+#   - src/shellscripts/: Main pipeline scripts
+#   - src/tests/experiments/: Phased evaluation framework
 #   - demo/: Streamlit interactive application
-#   - analysis/: Analysis scripts
-#   - launcher.py: CLI entry point
+#   - reports/: Final report and progress reports
+#   - research_paper/: Academic research paper
 #
 # - Key Features Enabled:
-#   ✓ Kleinberg burst detection
+#   ✓ Kleinberg burst detection (custom implementation)
 #   ✓ Temporal clustering (2D and 24D features)
 #   ✓ Network coordination analysis (NetworkX)
-#   ✓ Content similarity detection
+#   ✓ Content similarity detection (difflib)
 #   ✓ Community detection (modularity, label propagation)
 #   ✓ Interactive Streamlit dashboard
 #   ✓ Comprehensive visualizations (Plotly, Matplotlib, Seaborn)
 #   ✓ Retweet amplification analysis
 #   ✓ Hub account detection (degree centrality)
+#   ✓ Multi-signal coordination detection (5 signals)
+#   ✓ Phased evaluation framework (Phase 1-5)
 #
 # - Python 3.12+ Required for:
 #   ✓ Modern type hints support (typing.Dict, List, Optional, etc.)
@@ -84,14 +203,31 @@ python-dateutil>=2.8.0     # Date parsing and timezone handling
 #   ✓ Latest library compatibility
 #   ✓ Match/case statements (if used in future)
 #
-# - Installation:
-#   1. Ensure Python 3.12+ is installed
+# - Installation Steps:
+#   1. Ensure Python 3.12+ is installed: python --version
 #   2. Create virtual environment: python -m venv .venv
-#   3. Activate: .venv\Scripts\activate (Windows) or source .venv/bin/activate (Unix)
-#   4. Install: pip install -r requirements.txt
+#   3. Activate:
+#      - Windows: .venv\Scripts\activate
+#      - Unix/Mac: source .venv/bin/activate
+#   4. Upgrade pip: python -m pip install --upgrade pip
+#   5. Install: pip install -r requirements.txt
+#   6. Verify: python -c "import streamlit; print(streamlit.__version__)"
 #
 # - Troubleshooting:
 #   - If polars fails: Ensure Python 3.12+ and upgrade pip first
 #   - If networkx fails: Check Python version compatibility
-#   - If streamlit has issues: Clear cache with streamlit cache clear
+#   - If streamlit has issues:
+#     * Clear cache: streamlit cache clear
+#     * Upgrade: pip install --upgrade streamlit
+#     * Check version: streamlit --version
+#   - If datetime errors in pipeline: Check pandas version and timezone handling
+#   - If imports fail: Ensure you're in virtual environment (.venv)
+#
+# - Running the Project:
+#   Main Pipeline: python src/shellscripts/unified_pipeline.py
+#   Dashboard: streamlit run demo/interactive_burst_app.py
+#   Experiments: python src/tests/experiments/run_all_phases.py
+#
+# ============================================================================
+# LAST UPDATED: December 3, 2025
 # ============================================================================
