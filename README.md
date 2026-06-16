@@ -426,7 +426,7 @@ If issues persist:
 
 ## 📄 License
 
-[Choose one:]
+
 - **Academic Research** — All Rights Reserved
 
 ---
